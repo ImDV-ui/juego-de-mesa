@@ -1,0 +1,165 @@
+/* --- ESTILOS BASE DE CASILLAS --- */
+.space {
+    border: 1px solid #111;
+    box-sizing: border-box;
+    display: flex;
+    background: #dbead5;
+    overflow: hidden;
+    color: #111;
+}
+
+.color-bar {
+    border: 1px solid #111;
+    box-sizing: border-box;
+    flex-shrink: 0; 
+}
+
+.space-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    flex-grow: 1;
+    padding: 2px;
+    text-align: center;
+    text-transform: uppercase;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+/* Títulos y Precios */
+.name { 
+    flex-grow: 1; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    font-size: 0.55rem;
+    font-weight: bold;
+    line-height: 1.05;
+}
+.price { 
+    font-size: 0.6rem; 
+    padding-top: 1px; 
+    width: 100%; 
+    border-top: 1px solid rgba(0,0,0,0.1); 
+}
+
+/* --- ORIENTACIONES DE LAS CASILLAS --- */
+
+/* Fila de ABAJO (Normal) */
+.property.bottom { flex-direction: column; }
+.property.bottom .color-bar { width: 100%; height: 22%; }
+
+/* Fila de ARRIBA (Color arriba, texto debajo) */
+.property.top { flex-direction: column; }
+.property.top .color-bar { width: 100%; height: 22%; }
+
+/* Columna IZQUIERDA (Barra a la derecha, texto lee de abajo-arriba) */
+.property.left { 
+    flex-direction: row-reverse; 
+}
+.property.left .color-bar { 
+    width: 25%; 
+    height: 100%; 
+}
+.property.left .space-content {
+    writing-mode: vertical-rl;
+    transform: rotate(0deg);
+    font-size: 0.6rem; 
+}
+
+/* Columna DERECHA (Barra a la izquierda, letras apuntando hacia el centro del tablero) */
+.property.right { 
+    flex-direction: row; 
+}
+.property.right .color-bar { 
+    width: 25%; 
+    height: 100%; 
+}
+.property.right .space-content {
+    writing-mode: vertical-rl; 
+    transform: rotate(180deg); 
+}
+
+
+/* --- ESQUINAS --- */
+.corner-content {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1rem;
+    line-height: 1;
+}
+/* Rotación de esquinas para que miren al centro */
+.corner.jail .corner-content { transform: rotate(45deg); }
+.corner.go-to-jail .corner-content { transform: rotate(135deg); }
+.corner.parking .corner-content { transform: rotate(135deg); }
+.corner.go .corner-content { transform: rotate(-45deg); color: #e74c3c; font-size: 1.3rem; }
+.SALIDA { font-size: 1.5rem !important; }
+
+/* --- DISEÑO DEL CENTRO (LOGO Y UI) --- */
+.board-logo {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-35deg);
+    font-size: 4rem;
+    color: #e74c3c;
+    margin: 0;
+    text-align: center;
+    opacity: 0.7;
+    text-shadow: 2px 2px 0 #fff, -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff;
+    z-index: 1;
+    pointer-events: none;
+    line-height: 1;
+}
+
+.dice-ui-panel {
+    background: white;
+    padding: 15px 25px;
+    border-radius: 12px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+    z-index: 10;
+    text-align: center;
+    border: 2px solid #27ae60;
+    min-width: 120px;
+}
+
+.btn-roll {
+    background: #27ae60;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    width: 100%;
+}
+.btn-roll:hover { background: #219653; }
+.btn-roll:active { transform: scale(0.95); }
+
+.dice-result {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #2c3e50;
+    margin-top: 8px;
+    border-top: 2px solid #eee;
+    padding-top: 5px;
+}
+
+/* --- COLORES DE LAS PROPIEDADES --- */
+.bg-brown { background-color: #8b4513; }
+.bg-lightblue { background-color: #add8e6; }
+.bg-pink { background-color: #ff1493; }
+.bg-orange { background-color: #ffa500; }
+.bg-red { background-color: #ff0000; }
+.bg-yellow { background-color: #ffeb3b; }
+.bg-green { background-color: #008000; }
+.bg-darkblue { background-color: #00008b; }

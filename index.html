@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monopoly Algeciras</title>
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/elements.css">
+
+    <!-- Import Map for Three.js and Cannon-es -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/",
+                "cannon-es": "https://unpkg.com/cannon-es@0.20.0/dist/cannon-es.js"
+            }
+        }
+    </script>
+</head>
+<body>
+
+<div class="monopoly-board">
+    <div class="center-board">
+        <h1 class="board-logo">MONOPOLY<br>ALGECIRAS</h1>
+        <!-- 3D Dice Canvas Placeholder -->
+        <div id="dice-container" style="position: absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:5;"></div>
+        <div class="dice-ui-panel">
+            <button class="btn-roll" id="roll-button">Roll Dice</button>
+            <div class="dice-result" id="dice-result">--</div>
+        </div>
+    </div>
+
+    <div class="space corner go" style="grid-column: 11 / 12; grid-row: 11 / 12;">
+        <div class="corner-content SALIDA">SALIDA</div>
+    </div>
+    <div class="space corner jail" style="grid-column: 1 / 2; grid-row: 11 / 12;">
+        <div class="corner-content">CÁRCEL</div>
+    </div>
+    <div class="space corner parking" style="grid-column: 1 / 2; grid-row: 1 / 2;">
+        <div class="corner-content">PARKING<br>GRATIS</div>
+    </div>
+    <div class="space corner go-to-jail" style="grid-column: 11 / 12; grid-row: 1 / 2;">
+        <div class="corner-content">A LA<br>CÁRCEL</div>
+    </div>
+
+    <div class="space property bottom" style="grid-column: 10 / 11; grid-row: 11 / 12;">
+        <div class="color-bar bg-brown"></div><div class="space-content"><span class="name">Calle Tarifa</span><span class="price">M60</span></div>
+    </div>
+    <div class="space property bottom" style="grid-column: 9 / 10; grid-row: 11 / 12;">
+        <div class="space-content"><span class="name">Caja Comunidad</span></div>
+    </div>
+    <div class="space property bottom" style="grid-column: 8 / 9; grid-row: 11 / 12;">
+        <div class="color-bar bg-brown"></div><div class="space-content"><span class="name">San Antonio</span><span class="price">M60</span></div>
+    </div>
+    <div class="space property bottom" style="grid-column: 7 / 8; grid-row: 11 / 12;">
+        <div class="space-content"><span class="name">Impuesto Renta</span><span class="price">Paga M200</span></div>
+    </div>
+    <div class="space property bottom" style="grid-column: 6 / 7; grid-row: 11 / 12;">
+        <div class="space-content"><span class="name">Estación Renfe</span><span class="price">M200</span></div>
+    </div>
+    <div class="space property bottom" style="grid-column: 5 / 6; grid-row: 11 / 12;">
+        <div class="color-bar bg-lightblue"></div><div class="space-content"><span class="name">C. Convento</span><span class="price">M100</span></div>
+    </div>
+    <div class="space property bottom" style="grid-column: 4 / 5; grid-row: 11 / 12;">
+        <div class="space-content"><span class="name">? Suerte</span></div>
+    </div>
+    <div class="space property bottom" style="grid-column: 3 / 4; grid-row: 11 / 12;">
+        <div class="color-bar bg-lightblue"></div><div class="space-content"><span class="name">Regino Mtz.</span><span class="price">M100</span></div>
+    </div>
+    <div class="space property bottom" style="grid-column: 2 / 3; grid-row: 11 / 12;">
+        <div class="color-bar bg-lightblue"></div><div class="space-content"><span class="name">Plaza Alta</span><span class="price">M120</span></div>
+    </div>
+
+    <div class="space property left" style="grid-column: 1 / 2; grid-row: 10 / 11;">
+        <div class="color-bar bg-pink"></div><div class="space-content"><span class="name">Las Acacias</span><span class="price">M140</span></div>
+    </div>
+    <div class="space property left" style="grid-column: 1 / 2; grid-row: 9 / 10;">
+        <div class="space-content"><span class="name">Endesa</span><span class="price">M150</span></div>
+    </div>
+    <div class="space property left" style="grid-column: 1 / 2; grid-row: 8 / 9;">
+        <div class="color-bar bg-pink"></div><div class="space-content"><span class="name">Paseo de C.</span><span class="price">M140</span></div>
+    </div>
+    <div class="space property left" style="grid-column: 1 / 2; grid-row: 7 / 8;">
+        <div class="color-bar bg-pink"></div><div class="space-content"><span class="name">V. del Carmen</span><span class="price">M160</span></div>
+    </div>
+    <div class="space property left" style="grid-column: 1 / 2; grid-row: 6 / 7;">
+        <div class="space-content"><span class="name">Puerto</span><span class="price">M200</span></div>
+    </div>
+    <div class="space property left" style="grid-column: 1 / 2; grid-row: 5 / 6;">
+        <div class="color-bar bg-orange"></div><div class="space-content"><span class="name">Parque M. Cristina</span><span class="price">M180</span></div>
+    </div>
+    <div class="space property left" style="grid-column: 1 / 2; grid-row: 4 / 5;">
+        <div class="space-content"><span class="name">Caja Comunidad</span></div>
+    </div>
+    <div class="space property left" style="grid-column: 1 / 2; grid-row: 3 / 4;">
+        <div class="color-bar bg-orange"></div><div class="space-content"><span class="name">Pza. Verboom</span><span class="price">M180</span></div>
+    </div>
+    <div class="space property left" style="grid-column: 1 / 2; grid-row: 2 / 3;">
+        <div class="color-bar bg-orange"></div><div class="space-content"><span class="name">Calle Sevilla</span><span class="price">M200</span></div>
+    </div>
+
+    <div class="space property top" style="grid-column: 2 / 3; grid-row: 1 / 2;">
+        <div class="color-bar bg-red"></div><div class="space-content"><span class="name">El Rinconcillo</span><span class="price">M220</span></div>
+    </div>
+    <div class="space property top" style="grid-column: 3 / 4; grid-row: 1 / 2;">
+        <div class="space-content"><span class="name">? Suerte</span></div>
+    </div>
+    <div class="space property top" style="grid-column: 4 / 5; grid-row: 1 / 2;">
+        <div class="color-bar bg-red"></div><div class="space-content"><span class="name">S. José Artesano</span><span class="price">M220</span></div>
+    </div>
+    <div class="space property top" style="grid-column: 5 / 6; grid-row: 1 / 2;">
+        <div class="color-bar bg-red"></div><div class="space-content"><span class="name">La Ermita</span><span class="price">M240</span></div>
+    </div>
+    <div class="space property top" style="grid-column: 6 / 7; grid-row: 1 / 2;">
+        <div class="space-content"><span class="name">Est. Autobús</span><span class="price">M200</span></div>
+    </div>
+    <div class="space property top" style="grid-column: 7 / 8; grid-row: 1 / 2;">
+        <div class="color-bar bg-yellow"></div><div class="space-content"><span class="name">Getares</span><span class="price">M260</span></div>
+    </div>
+    <div class="space property top" style="grid-column: 8 / 9; grid-row: 1 / 2;">
+        <div class="color-bar bg-yellow"></div><div class="space-content"><span class="name">San García</span><span class="price">M260</span></div>
+    </div>
+    <div class="space property top" style="grid-column: 9 / 10; grid-row: 1 / 2;">
+        <div class="space-content"><span class="name">Emalgesa</span><span class="price">M150</span></div>
+    </div>
+    <div class="space property top" style="grid-column: 10 / 11; grid-row: 1 / 2;">
+        <div class="color-bar bg-yellow"></div><div class="space-content"><span class="name">El Saladillo</span><span class="price">M280</span></div>
+    </div>
+
+    <div class="space property right" style="grid-column: 11 / 12; grid-row: 2 / 3;">
+        <div class="color-bar bg-green"></div><div class="space-content"><span class="name">Pelayo</span><span class="price">M300</span></div>
+    </div>
+    <div class="space property right" style="grid-column: 11 / 12; grid-row: 3 / 4;">
+        <div class="color-bar bg-green"></div><div class="space-content"><span class="name">El Cobre</span><span class="price">M300</span></div>
+    </div>
+    <div class="space property right" style="grid-column: 11 / 12; grid-row: 4 / 5;">
+        <div class="space-content"><span class="name">Caja Comunidad</span></div>
+    </div>
+    <div class="space property right" style="grid-column: 11 / 12; grid-row: 5 / 6;">
+        <div class="color-bar bg-green"></div><div class="space-content"><span class="name">Los Pastores</span><span class="price">M320</span></div>
+    </div>
+    <div class="space property right" style="grid-column: 11 / 12; grid-row: 6 / 7;">
+        <div class="space-content"><span class="name">Helipuerto</span><span class="price">M200</span></div>
+    </div>
+    <div class="space property right" style="grid-column: 11 / 12; grid-row: 7 / 8;">
+        <div class="space-content"><span class="name">? Suerte</span></div>
+    </div>
+    <div class="space property right" style="grid-column: 11 / 12; grid-row: 8 / 9;">
+        <div class="color-bar bg-darkblue"></div><div class="space-content"><span class="name">Punta Carnero</span><span class="price">M350</span></div>
+    </div>
+    <div class="space property right" style="grid-column: 11 / 12; grid-row: 9 / 10;">
+        <div class="space-content"><span class="name">Impuesto Lujo</span><span class="price">Paga M100</span></div>
+    </div>
+    <div class="space property right" style="grid-column: 11 / 12; grid-row: 10 / 11;">
+        <div class="color-bar bg-darkblue"></div><div class="space-content"><span class="name">Bahía Algeciras</span><span class="price">M400</span></div>
+    </div>
+
+</div>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

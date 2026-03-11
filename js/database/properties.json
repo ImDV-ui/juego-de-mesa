@@ -1,0 +1,38 @@
+[
+  {
+    "id": "prop_1",
+    "name": "Old Town Road",
+    "price": 60,
+    "group": "brown",
+    "rent": [2, 10, 30, 90, 160, 250],
+    "mortgage": 30,
+    "houseCost": 50
+  },
+  {
+    "id": "prop_2",
+    "name": "Main Street",
+    "price": 60,
+    "group": "brown",
+    "rent": [4, 20, 60, 180, 320, 450],
+    "mortgage": 30,
+    "houseCost": 50
+  },
+  {
+    "id": "prop_3",
+    "name": "Park Avenue",
+    "price": 100,
+    "group": "cyan",
+    "rent": [6, 30, 90, 270, 400, 550],
+    "mortgage": 50,
+    "houseCost": 50
+  },
+  {
+    "id": "prop_4",
+    "name": "Broadway",
+    "price": 120,
+    "group": "cyan",
+    "rent": [8, 40, 100, 300, 450, 600],
+    "mortgage": 60,
+    "houseCost": 50
+  }
+]

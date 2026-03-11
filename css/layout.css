@@ -1,0 +1,38 @@
+body {
+    background-color: #2c3e50;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+}
+
+/* El Tablero Grid 11x11 */
+.monopoly-board {
+    display: grid;
+    /* Esquinas más grandes (1.7fr), calles normales 1fr */
+    grid-template-columns: 1.7fr repeat(9, 1fr) 1.7fr;
+    grid-template-rows: 1.7fr repeat(9, 1fr) 1.7fr;
+    width: 95vmin;
+    height: 95vmin;
+    max-width: 900px;
+    max-height: 900px;
+    background: #dbead5; /* Color clásico del tapete */
+    border: 3px solid #111;
+    box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+    box-sizing: border-box;
+}
+
+/* El hueco del medio (desde la col/row 2 hasta la 10) */
+.center-board {
+    grid-column: 2 / 11;
+    grid-row: 2 / 11;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    padding-bottom: 40px;
+}
