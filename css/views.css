@@ -6,7 +6,7 @@
     left: 0;
     width: 100vw;
     height: 100vh;
-    background-color: rgba(0, 0, 0, 0.6);
+    background-color: rgba(44, 62, 80, 0.85); /* Fondo azul oscuro translúcido */
     display: none;
     /* change to flex to show */
     justify-content: center;
@@ -15,9 +15,11 @@
 }
 
 .modal-content {
-    background-color: white;
-    padding: 2rem;
-    border-radius: 12px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-    min-width: 300px;
+    background-color: #fff8e1; /* Color papel/crema cálido */
+    padding: 2.5rem;
+    border-radius: 20px; /* Bordes más redondeados */
+    border: 5px solid #222; /* Borde oscuro cartoon */
+    box-shadow: 12px 12px 0 rgba(0, 0, 0, 0.2); /* Sombra sólida desfasada (efecto cómic) */
+    min-width: 320px;
+    font-family: 'Comic Sans MS', 'Arial Rounded MT Bold', sans-serif;
 }

@@ -15,27 +15,20 @@ export default class BoardController {
         this.spaceMeshes = [];
         this.monopolyData = this.getAlgecirasData();
         
-        // Expose materials so other controllers can use them if needed.
         this.floorPhysicsMaterial = null;
         this.clock = new THREE.Clock();
     }
 
     async init() {
-        console.log('BoardController initializing (Global 3D Environment)...');
-        
         this.container = document.getElementById('game-container');
-        if (!this.container) {
-            console.error("Game container not found!");
-            return;
-        }
+        if (!this.container) return;
 
-        // 1. Setup global Three.js Scene
         this.scene = new THREE.Scene();
-        this.scene.background = new THREE.Color(0x2c3e50);
+        this.scene.background = new THREE.Color(0x2c3e50); 
 
         const aspect = this.container.clientWidth / this.container.clientHeight;
         this.camera = new THREE.PerspectiveCamera(45, aspect, 0.1, 1000);
-        this.camera.position.set(0, 90, 90); // Isometric-ish view from front-bottom
+        this.camera.position.set(0, 90, 90); 
         this.camera.lookAt(0, 0, 0);
 
         this.renderer = new THREE.WebGLRenderer({ alpha: false, antialias: true });
@@ -45,30 +38,22 @@ export default class BoardController {
         this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         this.container.appendChild(this.renderer.domElement);
 
-        // OrbitControls
         this.controls = new OrbitControls(this.camera, this.renderer.domElement);
         this.controls.enableDamping = true;
         this.controls.dampingFactor = 0.05;
-        this.controls.maxPolarAngle = Math.PI / 2 - 0.1; // Don't allow going below ground
+        this.controls.maxPolarAngle = Math.PI / 2 - 0.1;
         this.controls.minDistance = 20;
         this.controls.maxDistance = 200;
 
-        // 2. Global Cannon Physics World
-        this.world = new CANNON.World({
-            gravity: new CANNON.Vec3(0, -90, 0), // Stronger gravity so dice fall faster
-        });
-
-        // Setup Physics Materials & Floor
+        this.world = new CANNON.World({ gravity: new CANNON.Vec3(0, -90, 0) });
         this.floorPhysicsMaterial = new CANNON.Material();
-        
         const floorShape = new CANNON.Plane();
         const floorBody = new CANNON.Body({ mass: 0, material: this.floorPhysicsMaterial });
         floorBody.addShape(floorShape);
         floorBody.quaternion.setFromEuler(-Math.PI / 2, 0, 0);
-        floorBody.position.set(0, 0.5, 0); // Put exactly on top surface of board meshes
+        floorBody.position.set(0, 0.5, 0); 
         this.world.addBody(floorBody);
 
-        // Invisible walls to keep dice on board (Slightly larger than the board itself)
         const wallOffset = 30;
         const wallShape = new CANNON.Box(new CANNON.Vec3(wallOffset, 50, 1));
         const walls = [
@@ -85,11 +70,11 @@ export default class BoardController {
             this.world.addBody(wallBody);
         });
 
-        // 3. Lighting
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+        // Luz ligeramente fría para resaltar el tono azulado
+        const ambientLight = new THREE.AmbientLight(0xffffff, 1.0); 
         this.scene.add(ambientLight);
         
-        const dirLight = new THREE.DirectionalLight(0xffffff, 1.3);
+        const dirLight = new THREE.DirectionalLight(0xf0f8ff, 0.7); // Luz direccional "AliceBlue" (fría)
         dirLight.position.set(20, 80, 20);
         dirLight.castShadow = true;
         dirLight.shadow.mapSize.width = 2048;
@@ -101,113 +86,156 @@ export default class BoardController {
         dirLight.shadow.bias = -0.0005;
         this.scene.add(dirLight);
 
-        // 4. Generate 3D Board
         this.generateBoard();
-
-        // Resize handler
         window.addEventListener('resize', this.onResize.bind(this));
-
-        // Start Loop
         this.animate();
-        console.log('BoardController setup complete.');
     }
 
     getAlgecirasData() {
         return [
             { name: "SALIDA", type: 'corner' }, // 0
-            { name: "Calle Tarifa", price: "M60", color: "#8b4513" }, // 1
+            { name: "Calle Tarifa", price: "M60", color: "#955436" }, 
             { name: "Caja Comunidad" }, // 2
-            { name: "San Antonio", price: "M60", color: "#8b4513" }, // 3
+            { name: "San Antonio", price: "M60", color: "#955436" }, 
             { name: "Impuesto Renta", price: "Paga M200" }, // 4
             { name: "Estación Renfe", price: "M200" }, // 5
-            { name: "C. Convento", price: "M100", color: "#add8e6" }, // 6
+            { name: "C. Convento", price: "M100", color: "#aae0fa" }, 
             { name: "? Suerte" }, // 7
-            { name: "Regino Mtz.", price: "M100", color: "#add8e6" }, // 8
-            { name: "Plaza Alta", price: "M120", color: "#add8e6" }, // 9
+            { name: "Regino Mtz.", price: "M100", color: "#aae0fa" }, 
+            { name: "Plaza Alta", price: "M120", color: "#aae0fa" }, 
             { name: "CÁRCEL", type: 'corner' }, // 10
-            { name: "Las Acacias", price: "M140", color: "#ff1493" }, // 11
+            { name: "Las Acacias", price: "M140", color: "#d93a96" }, 
             { name: "Endesa", price: "M150" }, // 12
-            { name: "Paseo de C.", price: "M140", color: "#ff1493" }, // 13
-            { name: "V. del Carmen", price: "M160", color: "#ff1493" }, // 14
+            { name: "Paseo de C.", price: "M140", color: "#d93a96" }, 
+            { name: "V. del Carmen", price: "M160", color: "#d93a96" }, 
             { name: "Puerto", price: "M200" }, // 15
-            { name: "Parque M.\nCristina", price: "M180", color: "#ffa500" }, // 16
+            { name: "Parque M.\nCristina", price: "M180", color: "#f7941d" }, 
             { name: "Caja Comunidad" }, // 17
-            { name: "Pza. Verboom", price: "M180", color: "#ffa500" }, // 18
-            { name: "Calle Sevilla", price: "M200", color: "#ffa500" }, // 19
+            { name: "Pza. Verboom", price: "M180", color: "#f7941d" }, 
+            { name: "Calle Sevilla", price: "M200", color: "#f7941d" }, 
             { name: "PARKING\nGRATIS", type: 'corner' }, // 20
-            { name: "El Rinconcillo", price: "M220", color: "#ff0000" }, // 21
+            { name: "El Rinconcillo", price: "M220", color: "#ed1b24" }, 
             { name: "? Suerte" }, // 22
-            { name: "S. José Artesano", price: "M220", color: "#ff0000" }, // 23
-            { name: "La Ermita", price: "M240", color: "#ff0000" }, // 24
+            { name: "S. José Artesano", price: "M220", color: "#ed1b24" }, 
+            { name: "La Ermita", price: "M240", color: "#ed1b24" }, 
             { name: "Est. Autobús", price: "M200" }, // 25
-            { name: "Getares", price: "M260", color: "#ffeb3b" }, // 26
-            { name: "San García", price: "M260", color: "#ffeb3b" }, // 27
+            { name: "Getares", price: "M260", color: "#fef200" }, 
+            { name: "San García", price: "M260", color: "#fef200" }, 
             { name: "Emalgesa", price: "M150" }, // 28
-            { name: "El Saladillo", price: "M280", color: "#ffeb3b" }, // 29
+            { name: "El Saladillo", price: "M280", color: "#fef200" }, 
             { name: "A LA\nCÁRCEL", type: 'corner' }, // 30
-            { name: "Pelayo", price: "M300", color: "#008000" }, // 31
-            { name: "El Cobre", price: "M300", color: "#008000" }, // 32
+            { name: "Pelayo", price: "M300", color: "#1fb25a" }, 
+            { name: "El Cobre", price: "M300", color: "#1fb25a" }, 
             { name: "Caja Comunidad" }, // 33
-            { name: "Los Pastores", price: "M320", color: "#008000" }, // 34
+            { name: "Los Pastores", price: "M320", color: "#1fb25a" }, 
             { name: "Helipuerto", price: "M200" }, // 35
             { name: "? Suerte" }, // 36
-            { name: "Punta Carnero", price: "M350", color: "#00008b" }, // 37
+            { name: "Punta Carnero", price: "M350", color: "#0072bb" }, 
             { name: "Impuesto Lujo", price: "Paga M100" }, // 38
-            { name: "Bahía Algeciras", price: "M400", color: "#00008b" } // 39
+            { name: "Bahía Algeciras", price: "M400", color: "#0072bb" } 
         ];
     }
 
     createSpaceTexture(spaceData, index) {
         const isCorner = (index % 10 === 0);
         const cw = isCorner ? 384 : 256;
-        const ch = isCorner ? 384 : 384; 
+        const ch = 384; 
         
         const canvas = document.createElement('canvas');
         canvas.width = cw;
         canvas.height = ch;
         const ctx = canvas.getContext('2d');
 
-        // Background (Tono verde pálido clásico de Monopoly)
-        ctx.fillStyle = '#cde2c9';
+        // EL COLOR CLAVE: Fondo azulado/verdoso pálido frío de las casillas
+        ctx.fillStyle = '#dae8e5'; 
         ctx.fillRect(0, 0, cw, ch);
         
-        // Border
-        ctx.strokeStyle = '#000';
-        ctx.lineWidth = 4;
+        // Borde exterior negro
+        ctx.strokeStyle = '#000000';
+        ctx.lineWidth = 4; 
         ctx.strokeRect(0, 0, cw, ch);
 
         ctx.save();
         
         if (isCorner) {
             ctx.translate(cw/2, ch/2);
-            // Orient appropriately diagonal
-            if (index === 0) ctx.rotate(-Math.PI/4); // Go
-            else if (index === 10) ctx.rotate(Math.PI/4); // Jail
-            else if (index === 20) ctx.rotate(3*Math.PI/4); // Parking
-            else if (index === 30) ctx.rotate(-3*Math.PI/4); // Go to Jail
-            ctx.translate(-cw/2, -ch/2); 
-            
-            ctx.fillStyle = '#000';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.font = '900 62px Inter, Arial'; // Extra bold, larger
-            
-            const lines = spaceData.name.split('\n');
-            if(lines.length === 1) {
-                if(index === 0) { ctx.fillStyle = '#e74c3c'; ctx.font = '900 85px Inter, Arial'; }
-                ctx.fillText(lines[0], cw/2, ch/2);
-            } else {
-                ctx.fillText(lines[0], cw/2, ch/2 - 35);
-                ctx.fillText(lines[1], cw/2, ch/2 + 35);
+            if (index === 0) ctx.rotate(-Math.PI/4); 
+            else if (index === 10) ctx.rotate(Math.PI/4); 
+            else if (index === 20) ctx.rotate(3*Math.PI/4); 
+            else if (index === 30) ctx.rotate(-3*Math.PI/4); 
+
+            // Diseños específicos para cada esquina
+            if (index === 0) {
+                // SALIDA
+                ctx.fillStyle = '#ed1b24';
+                // Flecha
+                ctx.beginPath();
+                ctx.moveTo(-100, 100); ctx.lineTo(100, 100); ctx.lineTo(140, 60);
+                ctx.lineTo(100, 20); ctx.lineTo(-100, 20); ctx.closePath();
+                ctx.fill(); ctx.stroke();
+                
+                ctx.fillStyle = '#000';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.font = 'bold 80px Arial'; 
+                ctx.fillText("SALIDA", 0, -40);
+                
+                ctx.font = 'bold 18px Arial';
+                ctx.fillText("COBRE M200 CADA VEZ", 0, -110);
+                ctx.fillText("QUE PASE POR AQUÍ", 0, -90);
+
+            } else if (index === 10) {
+                // CÁRCEL
+                ctx.fillStyle = '#f7941d';
+                ctx.fillRect(10, -180, 170, 170); 
+                ctx.strokeRect(10, -180, 170, 170);
+                
+                ctx.fillStyle = '#000';
+                ctx.font = 'bold 36px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText("EN LA", -80, -90);
+                ctx.fillText("CÁRCEL", 95, 40);
+                
+                ctx.save();
+                ctx.translate(-140, 95);
+                ctx.rotate(-Math.PI/2);
+                ctx.font = 'bold 28px Arial';
+                ctx.fillText("SÓLO VISITAS", 0, 0);
+                ctx.restore();
+
+            } else if (index === 20) {
+                // PARKING GRATUITO
+                ctx.fillStyle = '#000';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.font = 'bold 45px Arial'; 
+                ctx.fillText("PARKING", 0, -90);
+                ctx.font = '100px Arial';
+                ctx.fillText("🚗", 0, 10);
+                ctx.font = 'bold 45px Arial'; 
+                ctx.fillText("GRATUITO", 0, 110);
+
+            } else if (index === 30) {
+                // IR A LA CÁRCEL
+                ctx.fillStyle = '#000';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.font = 'bold 45px Arial'; 
+                ctx.fillText("IR A LA", 0, -90);
+                ctx.font = '100px Arial';
+                ctx.fillText("👮", 0, 10);
+                ctx.font = 'bold 45px Arial'; 
+                ctx.fillText("CÁRCEL", 0, 110);
             }
         } else {
-            // Normal space
-            // Color bar at top (V=1 is the top edge, meaning it faces center if rotation=0)
+            // Casillas normales
             if(spaceData.color) {
                 ctx.fillStyle = spaceData.color;
-                ctx.fillRect(0, 0, cw, 70);
+                ctx.fillRect(0, 0, cw, 80);
+                ctx.beginPath();
                 ctx.lineWidth = 4;
-                ctx.strokeRect(0, 0, cw, 70);
+                ctx.moveTo(0, 80); ctx.lineTo(cw, 80);
+                ctx.stroke();
             }
 
             ctx.fillStyle = '#000';
@@ -215,47 +243,42 @@ export default class BoardController {
             ctx.textBaseline = 'middle';
             
             const hasColorHeader = !!spaceData.color;
-            const nameY = hasColorHeader ? 120 : 70; // Adjusted for bigger text
+            const nameY = hasColorHeader ? 120 : 70; 
             
-            // Scaled fonts up for legibility
-            ctx.font = '900 42px Inter, Arial'; // Extra bold, much larger
+            ctx.font = 'bold 28px Arial, sans-serif'; 
             
             if(spaceData.name.includes('\n')) {
                const lines = spaceData.name.split('\n');
-               ctx.fillText(lines[0], cw/2, nameY);
-               ctx.fillText(lines[1], cw/2, nameY + 42); // increased line height
-            } else if(spaceData.name.length > 9 && spaceData.name.indexOf(' ') !== -1) {
-               // Auto-wrap long names that have spaces, wrap earlier for big text
+               ctx.fillText(lines[0].toUpperCase(), cw/2, nameY);
+               ctx.fillText(lines[1].toUpperCase(), cw/2, nameY + 30); 
+            } else if(spaceData.name.length > 10 && spaceData.name.indexOf(' ') !== -1) {
                const parts = spaceData.name.split(' ');
-               ctx.fillText(parts[0], cw/2, nameY);
-               ctx.fillText(parts.slice(1).join(' '), cw/2, nameY + 42);
+               ctx.fillText(parts[0].toUpperCase(), cw/2, nameY);
+               ctx.fillText(parts.slice(1).join(' ').toUpperCase(), cw/2, nameY + 30);
             } else {
-               ctx.fillText(spaceData.name, cw/2, nameY + 16);
+               ctx.fillText(spaceData.name.toUpperCase(), cw/2, nameY + 15);
             }
             
             if(spaceData.price && !spaceData.name.includes("Impuesto")) {
-               ctx.font = 'bold 36px Inter, Arial';
-               ctx.fillText(spaceData.price, cw/2, ch - 26); // Move price slightly up
+               ctx.font = 'bold 26px Arial, sans-serif';
+               ctx.fillText(spaceData.price.toUpperCase(), cw/2, ch - 25); 
                
-               // top border above price
                ctx.beginPath();
-               ctx.lineWidth = 3;
-               ctx.moveTo(15, ch - 55);
-               ctx.lineTo(cw - 15, ch - 55);
+               ctx.lineWidth = 2; 
+               ctx.moveTo(cw * 0.1, ch - 48);
+               ctx.lineTo(cw * 0.9, ch - 48);
                ctx.stroke();
             } else if(spaceData.price && spaceData.name.includes("Impuesto")) {
-               // Impuestos carry text like "Paga M200", render big
-               ctx.font = '900 38px Inter, Arial';
-               ctx.fillText(spaceData.price, cw/2, ch - 40);
+               ctx.font = 'bold 28px Arial, sans-serif';
+               ctx.fillText(spaceData.price.toUpperCase(), cw/2, ch - 40);
             }
             
-            // Icons centered perfectly in the remaining empty space between text and price
             if(spaceData.name.includes("Comunidad") || spaceData.name.includes("Suerte")) {
                ctx.font = '90px Arial';
                ctx.fillText(spaceData.name.includes("Suerte") ? "❓" : "🎁", cw/2, ch/2 + 25);
             } else if(spaceData.name.includes("Renfe") || spaceData.name.includes("Autobús") || spaceData.name.includes("Helipuerto") || spaceData.name.includes("Puerto")) {
                ctx.font = '90px Arial';
-               ctx.fillText("🚉", cw/2, ch/2 + 25);
+               ctx.fillText("🚉", cw/2, ch/2 + 35);
             } else if(spaceData.name.includes("Impuesto")) {
                ctx.font = '90px Arial';
                ctx.fillText("💍", cw/2, ch/2);
@@ -277,59 +300,52 @@ export default class BoardController {
         canvas.height = ch;
         const ctx = canvas.getContext('2d');
 
-        // Background
+        // Fondo del centro: Verde/Azulado pastel clásico
         ctx.fillStyle = '#cde2c9';
         ctx.fillRect(0, 0, cw, ch);
 
         ctx.save();
         ctx.translate(cw/2, ch/2);
-        
-        // Diagonal rotation for the main logo (bottom-left to top-right)
         ctx.rotate(-Math.PI / 4);
 
-        // Red background for Monopoly logo
-        ctx.fillStyle = '#ed1c24';
-        const logoW = 1400;
-        const logoH = 300;
+        ctx.fillStyle = '#ed1b24';
+        const logoW = 1500;
+        const logoH = 320;
         ctx.fillRect(-logoW/2, -logoH/2, logoW, logoH);
         
-        // White border
         ctx.strokeStyle = '#fff';
-        ctx.lineWidth = 15;
-        ctx.strokeRect(-logoW/2, -logoH/2, logoW, logoH);
+        ctx.lineWidth = 12;
+        ctx.strokeRect(-logoW/2 + 6, -logoH/2 + 6, logoW - 12, logoH - 12);
         
-        // Black outline
         ctx.strokeStyle = '#000';
-        ctx.lineWidth = 8;
-        ctx.strokeRect(-logoW/2 - 4, -logoH/2 - 4, logoW + 8, logoH + 8);
+        ctx.lineWidth = 6;
+        ctx.strokeRect(-logoW/2, -logoH/2, logoW, logoH);
 
-        // Text
         ctx.fillStyle = '#fff';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         
-        ctx.font = 'bold 180px Arial';
+        ctx.font = 'bold 190px Arial, sans-serif';
         ctx.strokeStyle = '#000';
-        ctx.lineWidth = 12;
+        ctx.lineWidth = 10;
         ctx.lineJoin = "round";
-        ctx.strokeText("MONOPOLY", 0, -25);
-        ctx.fillText("MONOPOLY", 0, -25);
+        ctx.strokeText("MONOPOLY", 0, -35);
+        ctx.fillText("MONOPOLY", 0, -35);
         
-        ctx.font = 'bold 60px Arial';
-        ctx.strokeText("ALGECIRAS", 0, 80);
-        ctx.fillText("ALGECIRAS", 0, 80);
+        ctx.fillStyle = '#000';
+        ctx.font = 'bold 75px Arial, sans-serif';
+        ctx.fillText("ALGECIRAS", 0, 100);
 
         ctx.restore();
 
-        // Orange Chance Card (Bottom Right)
         ctx.save();
-        ctx.translate(cw * 0.75, ch * 0.75); 
+        ctx.translate(cw * 0.72, ch * 0.72); 
         ctx.rotate(-Math.PI / 4);
         ctx.fillStyle = '#f7941d'; 
-        ctx.fillRect(-180, -240, 360, 480);
+        ctx.fillRect(-160, -220, 320, 440);
         ctx.strokeStyle = '#000';
         ctx.lineWidth = 4;
-        ctx.strokeRect(-180, -240, 360, 480);
+        ctx.strokeRect(-160, -220, 320, 440);
         ctx.fillStyle = '#fff';
         ctx.font = 'bold 200px Arial';
         ctx.textAlign = 'center';
@@ -337,15 +353,14 @@ export default class BoardController {
         ctx.fillText("?", 0, 0);
         ctx.restore();
 
-        // Blue Community Chest Card (Top Left)
         ctx.save();
-        ctx.translate(cw * 0.25, ch * 0.25); 
+        ctx.translate(cw * 0.28, ch * 0.28); 
         ctx.rotate(-Math.PI / 4);
-        ctx.fillStyle = '#6dcff6'; 
-        ctx.fillRect(-180, -240, 360, 480);
+        ctx.fillStyle = '#aae0fa';
+        ctx.fillRect(-160, -220, 320, 440);
         ctx.strokeStyle = '#000';
         ctx.lineWidth = 4;
-        ctx.strokeRect(-180, -240, 360, 480);
+        ctx.strokeRect(-160, -220, 320, 440);
         ctx.fillStyle = '#fff';
         ctx.font = 'bold 160px Arial';
         ctx.textAlign = 'center';
@@ -361,7 +376,7 @@ export default class BoardController {
     generateBoard() {
         const spaceW = 4.6;
         const spaceH = 7.0;
-        const rowOffset = (9 * spaceW) / 2 + (spaceH / 2); // 24.2
+        const rowOffset = (9 * spaceW) / 2 + (spaceH / 2);
 
         const geometryNormal = new THREE.BoxGeometry(spaceW * 0.95, 1, spaceH * 0.95);
         const geometryCorner = new THREE.BoxGeometry(spaceH * 0.95, 1, spaceH * 0.95);
@@ -370,32 +385,31 @@ export default class BoardController {
             const isCorner = (i % 10 === 0);
             const geo = isCorner ? geometryCorner : geometryNormal;
             
-            let x = 0;
-            let z = 0;
-            let rotationY = 0;
+            let x = 0; let z = 0; let rotationY = 0;
             
-            if (i === 0) { x = rowOffset; z = rowOffset; } // Go
+            if (i === 0) { x = rowOffset; z = rowOffset; } 
             else if (i < 10) { x = rowOffset - spaceH/2 - spaceW/2 - (i-1)*spaceW; z = rowOffset; rotationY = 0; }
-            else if (i === 10) { x = -rowOffset; z = rowOffset; } // Jail
+            else if (i === 10) { x = -rowOffset; z = rowOffset; } 
             else if (i < 20) { x = -rowOffset; z = rowOffset - spaceH/2 - spaceW/2 - (i-11)*spaceW; rotationY = -Math.PI / 2; }
-            else if (i === 20) { x = -rowOffset; z = -rowOffset; } // Parking
+            else if (i === 20) { x = -rowOffset; z = -rowOffset; } 
             else if (i < 30) { x = -rowOffset + spaceH/2 + spaceW/2 + (i-21)*spaceW; z = -rowOffset; rotationY = Math.PI; }
-            else if (i === 30) { x = rowOffset; z = -rowOffset; } // Go to Jail
+            else if (i === 30) { x = rowOffset; z = -rowOffset; } 
             else if (i < 40) { x = rowOffset; z = -rowOffset + spaceH/2 + spaceW/2 + (i-31)*spaceW; rotationY = Math.PI / 2; }
 
             const spaceData = this.monopolyData[i];
             
+            // Material lateral teñido ligeramente para que concuerde con la cara superior
             const sideMat = new THREE.MeshStandardMaterial({ 
-                color: '#cde2c9', // Igual que el fondo superior
-                roughness: 0.8,
-                metalness: 0.05
+                color: '#dae8e5', 
+                roughness: 1.0,   
+                metalness: 0.0
             });
             
             const topTexture = this.createSpaceTexture(spaceData, i);
             const topMat = new THREE.MeshStandardMaterial({ 
                 map: topTexture,
-                roughness: 0.6,
-                metalness: 0.05
+                roughness: 1.0,   
+                metalness: 0.0
             });
             
             const materials = [sideMat, sideMat, topMat, sideMat, sideMat, sideMat];
@@ -408,37 +422,29 @@ export default class BoardController {
             
             this.scene.add(mesh);
             this.spaceMeshes.push(mesh);
-
-            // Vector3 where the token sits: Top is 0.5 + margin 
             this.spaceCoordinates[i] = new THREE.Vector3(x, 0.5, z);
         }
         
-        // Inner board floor (the center area table mat)
         const innerGeo = new THREE.PlaneGeometry(rowOffset*2 - spaceH, rowOffset*2 - spaceH);
-        
         const centerTexture = this.createCenterTexture();
+        
         const innerMat = new THREE.MeshStandardMaterial({ 
             map: centerTexture, 
-            roughness: 0.9, 
+            roughness: 1.0, 
             metalness: 0 
         });
         const innerMesh = new THREE.Mesh(innerGeo, innerMat);
         innerMesh.rotation.x = -Math.PI / 2;
-        innerMesh.position.y = -0.49; // Slightly below the boxes
+        innerMesh.position.y = -0.49; 
         innerMesh.receiveShadow = true;
         this.scene.add(innerMesh);
     }
 
     animate() {
         requestAnimationFrame(this.animate.bind(this));
-        
         const dt = this.clock.getDelta();
-        if(this.world) {
-            this.world.step(1/60, Math.min(dt, 0.1), 3);
-        }
-        
+        if(this.world) this.world.step(1/60, Math.min(dt, 0.1), 3);
         if (this.controls) this.controls.update();
-
         if (this.renderer && this.scene && this.camera) {
             this.renderer.render(this.scene, this.camera);
         }

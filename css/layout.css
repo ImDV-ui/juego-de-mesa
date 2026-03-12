@@ -1,7 +1,13 @@
 body {
-    background-color: #2c3e50;
+    /* Fondo vibrante estilo cartoon / césped o tierra clara */
+    background-color: #f7e09e;
+    background-image:
+        radial-gradient(#e1cc8b 10%, transparent 10.5%),
+        radial-gradient(#e1cc8b 10%, transparent 10.5%);
+    background-size: 20px 20px;
+    background-position: 0 0, 10px 10px;
     margin: 0;
     padding: 0;
-    font-family: 'Arial', sans-serif;
-    overflow: hidden; /* Hide scrollbars since it's a fixed canvas */
+    font-family: 'Comic Sans MS', 'Arial Rounded MT Bold', 'Arial', sans-serif;
+    overflow: hidden; /* Oculta los scrollbars para el canvas fijo */
 }

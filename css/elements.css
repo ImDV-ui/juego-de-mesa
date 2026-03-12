@@ -1,17 +1,19 @@
 /* --- ESTILOS BASE DE CASILLAS --- */
 .space {
-    border: 1px solid #111;
+    border: 3px solid #222; /* Borde grueso estilo cómic */
     box-sizing: border-box;
     display: flex;
-    background: #dbead5;
+    background: #fff8e1; /* Fondo pergamino claro en lugar de gris verdoso */
     overflow: hidden;
-    color: #111;
+    color: #222;
+    box-shadow: inset 0 0 8px rgba(0,0,0,0.05); /* Ligerísima profundidad */
 }
 
 .color-bar {
-    border: 1px solid #111;
+    border: 3px solid #222; /* Borde interior negro grueso */
     box-sizing: border-box;
     flex-shrink: 0; 
+    box-shadow: inset 0 -4px 0 rgba(0,0,0,0.2); /* Sombra interior para dar efecto volumen/grosor */
 }
 
 .space-content {
@@ -20,12 +22,13 @@
     justify-content: space-between;
     align-items: center;
     flex-grow: 1;
-    padding: 2px;
+    padding: 4px 2px;
     text-align: center;
     text-transform: uppercase;
     width: 100%;
     height: 100%;
     box-sizing: border-box;
+    font-weight: 900;
 }
 
 /* Títulos y Precios */
@@ -34,26 +37,31 @@
     display: flex; 
     align-items: center; 
     justify-content: center; 
-    font-size: 0.55rem;
-    font-weight: bold;
-    line-height: 1.05;
+    font-size: 0.6rem;
+    font-weight: 900;
+    line-height: 1.1;
+    color: #222;
+    text-shadow: 1px 1px 0px rgba(255,255,255,0.8); /* Resalta el texto */
 }
 .price { 
-    font-size: 0.6rem; 
-    padding-top: 1px; 
+    font-size: 0.7rem; 
+    padding-top: 3px; 
     width: 100%; 
-    border-top: 1px solid rgba(0,0,0,0.1); 
+    border-top: 3px solid #222; /* Separador de precio grueso */
+    font-weight: 900;
+    color: #111;
+    background-color: rgba(0,0,0,0.03);
 }
 
 /* --- ORIENTACIONES DE LAS CASILLAS --- */
 
 /* Fila de ABAJO (Normal) */
 .property.bottom { flex-direction: column; }
-.property.bottom .color-bar { width: 100%; height: 22%; }
+.property.bottom .color-bar { width: 100%; height: 25%; }
 
 /* Fila de ARRIBA (Color arriba, texto debajo) */
 .property.top { flex-direction: column; }
-.property.top .color-bar { width: 100%; height: 22%; }
+.property.top .color-bar { width: 100%; height: 25%; }
 
 /* Columna IZQUIERDA (Barra a la derecha, texto lee de abajo-arriba) */
 .property.left { 
@@ -66,7 +74,7 @@
 .property.left .space-content {
     writing-mode: vertical-rl;
     transform: rotate(0deg);
-    font-size: 0.6rem; 
+    font-size: 0.65rem; 
 }
 
 /* Columna DERECHA (Barra a la izquierda, letras apuntando hacia el centro del tablero) */
@@ -91,29 +99,44 @@
     justify-content: center;
     align-items: center;
     text-align: center;
-    font-weight: bold;
-    font-size: 1rem;
-    line-height: 1;
+    font-weight: 900;
+    font-size: 1.2rem;
+    line-height: 1.1;
+    color: #222;
+    text-shadow: 1px 1px 0px #fff;
 }
 /* Rotación de esquinas para que miren al centro */
 .corner.jail .corner-content { transform: rotate(45deg); }
 .corner.go-to-jail .corner-content { transform: rotate(135deg); }
 .corner.parking .corner-content { transform: rotate(135deg); }
-.corner.go .corner-content { transform: rotate(-45deg); color: #e74c3c; font-size: 1.3rem; }
-.SALIDA { font-size: 1.5rem !important; }
+/* Salida Ultra Vibrante */
+.corner.go .corner-content { 
+    transform: rotate(-45deg); 
+    color: #ffeb3b; 
+    font-size: 1.5rem; 
+    text-shadow: 2px 2px 0 #d32f2f, -1px -1px 0 #d32f2f, 1px -1px 0 #d32f2f, -1px 1px 0 #d32f2f; 
+}
+.SALIDA { font-size: 1.8rem !important; color: #ffeb3b; }
 
 /* --- DISEÑO DEL CENTRO (LOGO Y UI) --- */
 .board-logo {
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%) rotate(-35deg);
-    font-size: 4rem;
-    color: #e74c3c;
+    transform: translate(-50%, -50%) rotate(-15deg);
+    font-size: 5rem;
+    font-weight: 900;
+    color: #ffeb3b; /* Amarillo vibrante */
     margin: 0;
     text-align: center;
-    opacity: 0.7;
-    text-shadow: 2px 2px 0 #fff, -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff;
+    opacity: 0.9;
+    /* Borde duro estilo título de videojuego/cómic */
+    text-shadow: 
+        4px 4px 0 #e74c3c, 
+        -2px -2px 0 #e74c3c, 
+        2px -2px 0 #e74c3c, 
+        -2px 2px 0 #e74c3c,
+        8px 8px 0 rgba(0,0,0,0.2);
     z-index: 1;
     pointer-events: none;
     line-height: 1;
@@ -128,16 +151,17 @@
 }
 
 .btn-roll-3d {
-    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    background: #ff4757; /* Rojo intenso vivo */
     color: white;
-    border: none;
-    padding: 15px 30px;
-    font-size: 1.5rem;
-    font-weight: bold;
+    border: 4px solid #222; /* Borde oscuro */
+    padding: 15px 35px;
+    font-size: 1.6rem;
+    font-weight: 900;
     border-radius: 50px;
     cursor: pointer;
-    box-shadow: 0 8px 15px rgba(231, 76, 60, 0.4), inset 0 -4px 0 rgba(0,0,0,0.2);
-    transition: all 0.2s ease;
+    /* Efecto de botón 3D tipo arcade/físico */
+    box-shadow: 0 8px 0 #222, 0 15px 20px rgba(0,0,0,0.3);
+    transition: all 0.1s ease;
     text-transform: uppercase;
     display: flex;
     align-items: center;
@@ -146,14 +170,14 @@
 }
 
 .btn-roll-3d:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(231, 76, 60, 0.5), inset 0 -4px 0 rgba(0,0,0,0.2);
-    background: linear-gradient(135deg, #f1786b, #d84535);
+    transform: translateY(3px);
+    box-shadow: 0 5px 0 #222, 0 10px 15px rgba(0,0,0,0.3);
+    background: #ff6b81;
 }
 
 .btn-roll-3d:active {
-    transform: translateY(4px);
-    box-shadow: 0 2px 5px rgba(231, 76, 60, 0.4), inset 0 0 0 rgba(0,0,0,0.2);
+    transform: translateY(8px);
+    box-shadow: 0 0 0 #222, 0 2px 5px rgba(0,0,0,0.3);
 }
 
 /* --- POPUP RESULTADO DEL DADO --- */
@@ -163,7 +187,7 @@
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(44, 62, 80, 0.85); /* Overlay más opaco y azulado */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -179,58 +203,70 @@
 }
 
 .dice-popup-content {
-    background: white;
-    padding: 40px 60px;
-    border-radius: 20px;
+    background: #fff8e1;
+    padding: 40px 70px;
+    border-radius: 30px;
     text-align: center;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-    transform: scale(0.8);
+    box-shadow: 15px 15px 0 rgba(0,0,0,0.3); /* Sombra cómic desfasada */
+    transform: scale(0.8) rotate(-5deg); /* Ligera rotación juguetona al inicio */
     transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    border: 5px solid #27ae60;
+    border: 6px solid #222;
 }
 
 .dice-popup-overlay.show .dice-popup-content {
-    transform: scale(1);
+    transform: scale(1) rotate(0deg);
 }
 
 .dice-popup-content h2 {
     margin: 0 0 10px 0;
-    color: #2c3e50;
-    font-size: 1.8rem;
+    color: #222;
+    font-size: 2rem;
+    font-weight: 900;
     text-transform: uppercase;
+    text-shadow: 2px 2px 0 #ffeb3b; /* Destello detrás del texto */
 }
 
 .dice-popup-result {
-    font-size: 5rem;
-    font-weight: bold;
-    color: #27ae60;
+    font-size: 6rem;
+    font-weight: 900;
+    color: #2ed573; /* Verde vibrante */
     margin: 20px 0;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+    /* Borde negro mediante shadow + text-stroke */
+    text-shadow: 4px 4px 0 #222; 
+    -webkit-text-stroke: 2px #222;
 }
 
 .btn-popup-close {
-    background: #2c3e50;
+    background: #1e90ff; /* Azul vivo */
     color: white;
-    border: none;
+    border: 4px solid #222;
     padding: 12px 30px;
-    font-size: 1.2rem;
-    border-radius: 8px;
+    font-size: 1.3rem;
+    font-weight: 900;
+    border-radius: 15px;
     cursor: pointer;
-    font-weight: bold;
-    transition: background 0.2s;
+    box-shadow: 0 6px 0 #222; /* Botón 3D físico */
+    transition: all 0.1s;
     text-transform: uppercase;
 }
 
 .btn-popup-close:hover {
-    background: #1a252f;
+    transform: translateY(2px);
+    box-shadow: 0 4px 0 #222;
+    background: #70a1ff;
 }
 
-/* --- COLORES DE LAS PROPIEDADES --- */
-.bg-brown { background-color: #8b4513; }
-.bg-lightblue { background-color: #add8e6; }
-.bg-pink { background-color: #ff1493; }
-.bg-orange { background-color: #ffa500; }
-.bg-red { background-color: #ff0000; }
-.bg-yellow { background-color: #ffeb3b; }
-.bg-green { background-color: #008000; }
-.bg-darkblue { background-color: #00008b; }
+.btn-popup-close:active {
+    transform: translateY(6px);
+    box-shadow: 0 0 0 #222;
+}
+
+/* --- COLORES ULTRA-VIBRANTES DE LAS PROPIEDADES --- */
+.bg-brown { background-color: #d35400; } /* Naranja/Marrón cálido brillante */
+.bg-lightblue { background-color: #00d2d3; } /* Cian muy brillante */
+.bg-pink { background-color: #ff9ff3; } /* Rosa chicle puro */
+.bg-orange { background-color: #ff9f43; } /* Naranja radioactivo */
+.bg-red { background-color: #ff4757; } /* Rojo puro */
+.bg-yellow { background-color: #feca57; } /* Amarillo oro/yema */
+.bg-green { background-color: #1dd1a1; } /* Verde esmeralda vivo */
+.bg-darkblue { background-color: #5f27cd; } /* Azul púrpura vibrante */
