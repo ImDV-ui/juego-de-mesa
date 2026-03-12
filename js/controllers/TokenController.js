@@ -37,11 +37,20 @@ export default class TokenController {
                     model.scale.set(scale, scale, scale);
                     model.position.sub(center.multiplyScalar(scale)); // Center it
                     
-                    // Enable shadows
+                    // Recorrer el modelo para habilitar sombras y aplicar material CROMADO
                     model.traverse(c => {
                         if (c.isMesh) {
                             c.castShadow = true;
                             c.receiveShadow = true;
+                            
+                            // Material cromado perfecto que SOLO APLICA AL COCHE
+                            c.material = new THREE.MeshStandardMaterial({
+                                color: 0xffffff, // Base blanca pura
+                                metalness: 1.0,  // 100% metal
+                                roughness: 0.1,  // Muy pulido
+                                envMap: this.scene.userData.envTexture, // <-- Usamos el entorno guardado
+                                envMapIntensity: 1.5 // Aumentamos el reflejo
+                            });
                         }
                     });
 
@@ -79,19 +88,15 @@ export default class TokenController {
         token.model.position.set(targetCoord.x, targetCoord.y, targetCoord.z);
 
         // Update 3D Model Rotation based on board side
-        // Pos 0-10: Bottom row, moving left. 
         if (token.currentPosition >= 0 && token.currentPosition < 10) {
             token.model.rotation.y = Math.PI / 2 + Math.PI; 
         }
-        // Pos 10-20: Left col, moving up.
         else if (token.currentPosition >= 10 && token.currentPosition < 20) {
             token.model.rotation.y = 0 + Math.PI;
         }
-        // Pos 20-30: Top row, moving right. 
         else if (token.currentPosition >= 20 && token.currentPosition < 30) {
             token.model.rotation.y = -Math.PI / 2 + Math.PI;
         }
-        // Pos 30-39: Right col, moving down.
         else if (token.currentPosition >= 30 && token.currentPosition < 40) {
             token.model.rotation.y = Math.PI + Math.PI;
         }
@@ -103,7 +108,6 @@ export default class TokenController {
 
         token.targetPosition = (token.currentPosition + steps) % 40;
 
-        // Animate space by space
         while (token.currentPosition !== token.targetPosition) {
             token.currentPosition = (token.currentPosition + 1) % 40;
             await this.animateStep(token);
@@ -116,30 +120,26 @@ export default class TokenController {
             const endCoord = this.spaceCoordinates[token.currentPosition];
             const endPos = new THREE.Vector3(endCoord.x, endCoord.y, endCoord.z);
             
-            // Instantly update rotation before moving
             this.updateToken3DPosition(token);
-            token.model.position.copy(startPos); // Override the position snap to do smooth sliding
+            token.model.position.copy(startPos); 
 
-            // Simple frames-based interpolation over ~300ms
             const frames = 20;
             let currentFrame = 0;
-            const hopHeight = 3.0; // little jump arc
+            const hopHeight = 3.0; 
             
             const animateHop = () => {
                 currentFrame++;
-                const progress = currentFrame / frames; // 0 to 1
+                const progress = currentFrame / frames; 
                 
-                // Lerp X and Z
                 token.model.position.lerpVectors(startPos, endPos, progress);
                 
-                // Add Y parabola
                 const arc = Math.sin(progress * Math.PI) * hopHeight;
                 token.model.position.y += arc;
 
                 if (currentFrame < frames) {
                     requestAnimationFrame(animateHop);
                 } else {
-                    token.model.position.copy(endPos); // ensure exact finish
+                    token.model.position.copy(endPos); 
                     resolve();
                 }
             };

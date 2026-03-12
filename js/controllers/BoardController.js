@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 
 export default class BoardController {
     constructor() {
@@ -37,6 +38,9 @@ export default class BoardController {
         this.renderer.shadowMap.enabled = true;
         this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         this.container.appendChild(this.renderer.domElement);
+
+        const pmremGenerator = new THREE.PMREMGenerator(this.renderer);
+        this.scene.userData.envTexture = pmremGenerator.fromScene(new RoomEnvironment(), 0.04).texture;
 
         this.controls = new OrbitControls(this.camera, this.renderer.domElement);
         this.controls.enableDamping = true;
@@ -146,11 +150,9 @@ export default class BoardController {
         canvas.height = ch;
         const ctx = canvas.getContext('2d');
 
-        // EL COLOR CLAVE: Fondo azulado/verdoso pálido frío de las casillas
         ctx.fillStyle = '#dae8e5'; 
         ctx.fillRect(0, 0, cw, ch);
         
-        // Borde exterior negro
         ctx.strokeStyle = '#000000';
         ctx.lineWidth = 4; 
         ctx.strokeRect(0, 0, cw, ch);
@@ -164,47 +166,36 @@ export default class BoardController {
             else if (index === 20) ctx.rotate(3*Math.PI/4); 
             else if (index === 30) ctx.rotate(-3*Math.PI/4); 
 
-            // Diseños específicos para cada esquina
             if (index === 0) {
-                // SALIDA
                 ctx.fillStyle = '#ed1b24';
-                // Flecha
                 ctx.beginPath();
                 ctx.moveTo(-100, 100); ctx.lineTo(100, 100); ctx.lineTo(140, 60);
                 ctx.lineTo(100, 20); ctx.lineTo(-100, 20); ctx.closePath();
                 ctx.fill(); ctx.stroke();
-                
                 ctx.fillStyle = '#000';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 ctx.font = 'bold 80px Arial'; 
                 ctx.fillText("SALIDA", 0, -40);
-                
                 ctx.font = 'bold 18px Arial';
                 ctx.fillText("COBRE M200 CADA VEZ", 0, -110);
                 ctx.fillText("QUE PASE POR AQUÍ", 0, -90);
-
             } else if (index === 10) {
-                // CÁRCEL
                 ctx.fillStyle = '#f7941d';
                 ctx.fillRect(10, -180, 170, 170); 
                 ctx.strokeRect(10, -180, 170, 170);
-                
                 ctx.fillStyle = '#000';
                 ctx.font = 'bold 36px Arial';
                 ctx.textAlign = 'center';
                 ctx.fillText("EN LA", -80, -90);
                 ctx.fillText("CÁRCEL", 95, 40);
-                
                 ctx.save();
                 ctx.translate(-140, 95);
                 ctx.rotate(-Math.PI/2);
                 ctx.font = 'bold 28px Arial';
                 ctx.fillText("SÓLO VISITAS", 0, 0);
                 ctx.restore();
-
             } else if (index === 20) {
-                // PARKING GRATUITO
                 ctx.fillStyle = '#000';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
@@ -214,9 +205,7 @@ export default class BoardController {
                 ctx.fillText("🚗", 0, 10);
                 ctx.font = 'bold 45px Arial'; 
                 ctx.fillText("GRATUITO", 0, 110);
-
             } else if (index === 30) {
-                // IR A LA CÁRCEL
                 ctx.fillStyle = '#000';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
@@ -228,7 +217,6 @@ export default class BoardController {
                 ctx.fillText("CÁRCEL", 0, 110);
             }
         } else {
-            // Casillas normales
             if(spaceData.color) {
                 ctx.fillStyle = spaceData.color;
                 ctx.fillRect(0, 0, cw, 80);
@@ -262,7 +250,6 @@ export default class BoardController {
             if(spaceData.price && !spaceData.name.includes("Impuesto")) {
                ctx.font = 'bold 26px Arial, sans-serif';
                ctx.fillText(spaceData.price.toUpperCase(), cw/2, ch - 25); 
-               
                ctx.beginPath();
                ctx.lineWidth = 2; 
                ctx.moveTo(cw * 0.1, ch - 48);
@@ -300,7 +287,6 @@ export default class BoardController {
         canvas.height = ch;
         const ctx = canvas.getContext('2d');
 
-        // Fondo del centro: Verde/Azulado pastel clásico
         ctx.fillStyle = '#cde2c9';
         ctx.fillRect(0, 0, cw, ch);
 
@@ -335,7 +321,6 @@ export default class BoardController {
         ctx.fillStyle = '#000';
         ctx.font = 'bold 75px Arial, sans-serif';
         ctx.fillText("ALGECIRAS", 0, 100);
-
         ctx.restore();
 
         ctx.save();
@@ -398,7 +383,6 @@ export default class BoardController {
 
             const spaceData = this.monopolyData[i];
             
-            // Material lateral teñido ligeramente para que concuerde con la cara superior
             const sideMat = new THREE.MeshStandardMaterial({ 
                 color: '#dae8e5', 
                 roughness: 1.0,   

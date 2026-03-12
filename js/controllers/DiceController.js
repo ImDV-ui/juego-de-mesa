@@ -179,7 +179,7 @@ export default class DiceController {
             }
         }
 
-        // Global render is handled by BoardController
+        
     }
 
     calculateResult() {
@@ -187,7 +187,7 @@ export default class DiceController {
         const results = [];
         let total = 0;
 
-        // VECTORES CALIBRADOS FINALMENTE
+        // VECTORES CALIBRADOS 
         const faceNormals = [
             { vector: new THREE.Vector3(0, 1, 0), value: 4 },  // Y Positivo
             { vector: new THREE.Vector3(0, -1, 0), value: 3 }, // Y Negativo
