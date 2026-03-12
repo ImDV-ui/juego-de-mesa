@@ -8,6 +8,6 @@ body {
     background-position: 0 0, 10px 10px;
     margin: 0;
     padding: 0;
-    font-family: 'Comic Sans MS', 'Arial Rounded MT Bold', 'Arial', sans-serif;
+    font-family: 'Outfit', 'Arial Rounded MT Bold', sans-serif;
     overflow: hidden; /* Oculta los scrollbars para el canvas fijo */
 }

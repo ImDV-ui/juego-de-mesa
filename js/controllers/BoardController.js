@@ -98,45 +98,45 @@ export default class BoardController {
     getAlgecirasData() {
         return [
             { name: "SALIDA", type: 'corner' }, // 0
-            { name: "Calle Tarifa", price: "M60", color: "#955436" }, 
+            { name: "Calle Tarifa", price: "M60", color: "#6C3717" }, 
             { name: "Caja Comunidad" }, // 2
-            { name: "San Antonio", price: "M60", color: "#955436" }, 
+            { name: "San Antonio", price: "M60", color: "#6C3717" }, 
             { name: "Impuesto Renta", price: "Paga M200" }, // 4
             { name: "Estación Renfe", price: "M200" }, // 5
-            { name: "C. Convento", price: "M100", color: "#aae0fa" }, 
+            { name: "C. Convento", price: "M100", color: "#8AD0EF" }, 
             { name: "? Suerte" }, // 7
-            { name: "Regino Mtz.", price: "M100", color: "#aae0fa" }, 
-            { name: "Plaza Alta", price: "M120", color: "#aae0fa" }, 
+            { name: "Regino Mtz.", price: "M100", color: "#8AD0EF" }, 
+            { name: "Plaza Alta", price: "M120", color: "#8AD0EF" }, 
             { name: "CÁRCEL", type: 'corner' }, // 10
-            { name: "Las Acacias", price: "M140", color: "#d93a96" }, 
+            { name: "Las Acacias", price: "M140", color: "#D63384" }, 
             { name: "Endesa", price: "M150" }, // 12
-            { name: "Paseo de C.", price: "M140", color: "#d93a96" }, 
-            { name: "V. del Carmen", price: "M160", color: "#d93a96" }, 
+            { name: "Paseo de C.", price: "M140", color: "#D63384" }, 
+            { name: "V. del Carmen", price: "M160", color: "#D63384" }, 
             { name: "Puerto", price: "M200" }, // 15
-            { name: "Parque M.\nCristina", price: "M180", color: "#f7941d" }, 
+            { name: "Parque M.\nCristina", price: "M180", color: "#F47D20" }, 
             { name: "Caja Comunidad" }, // 17
-            { name: "Pza. Verboom", price: "M180", color: "#f7941d" }, 
-            { name: "Calle Sevilla", price: "M200", color: "#f7941d" }, 
+            { name: "Pza. Verboom", price: "M180", color: "#F47D20" }, 
+            { name: "Calle Sevilla", price: "M200", color: "#F47D20" }, 
             { name: "PARKING\nGRATIS", type: 'corner' }, // 20
-            { name: "El Rinconcillo", price: "M220", color: "#ed1b24" }, 
+            { name: "El Rinconcillo", price: "M220", color: "#E31E24" }, 
             { name: "? Suerte" }, // 22
-            { name: "S. José Artesano", price: "M220", color: "#ed1b24" }, 
-            { name: "La Ermita", price: "M240", color: "#ed1b24" }, 
+            { name: "S. José Artesano", price: "M220", color: "#E31E24" }, 
+            { name: "La Ermita", price: "M240", color: "#E31E24" }, 
             { name: "Est. Autobús", price: "M200" }, // 25
-            { name: "Getares", price: "M260", color: "#fef200" }, 
-            { name: "San García", price: "M260", color: "#fef200" }, 
+            { name: "Getares", price: "M260", color: "#FFDE00" }, 
+            { name: "San García", price: "M260", color: "#FFDE00" }, 
             { name: "Emalgesa", price: "M150" }, // 28
-            { name: "El Saladillo", price: "M280", color: "#fef200" }, 
+            { name: "El Saladillo", price: "M280", color: "#FFDE00" }, 
             { name: "A LA\nCÁRCEL", type: 'corner' }, // 30
-            { name: "Pelayo", price: "M300", color: "#1fb25a" }, 
-            { name: "El Cobre", price: "M300", color: "#1fb25a" }, 
+            { name: "Pelayo", price: "M300", color: "#169A4C" }, 
+            { name: "El Cobre", price: "M300", color: "#169A4C" }, 
             { name: "Caja Comunidad" }, // 33
-            { name: "Los Pastores", price: "M320", color: "#1fb25a" }, 
+            { name: "Los Pastores", price: "M320", color: "#169A4C" }, 
             { name: "Helipuerto", price: "M200" }, // 35
             { name: "? Suerte" }, // 36
-            { name: "Punta Carnero", price: "M350", color: "#0072bb" }, 
+            { name: "Punta Carnero", price: "M350", color: "#1262B3" }, 
             { name: "Impuesto Lujo", price: "Paga M100" }, // 38
-            { name: "Bahía Algeciras", price: "M400", color: "#0072bb" } 
+            { name: "Bahía Algeciras", price: "M400", color: "#1262B3" } 
         ];
     }
 
@@ -150,7 +150,8 @@ export default class BoardController {
         canvas.height = ch;
         const ctx = canvas.getContext('2d');
 
-        ctx.fillStyle = '#dae8e5'; 
+        const boardColor = '#CFE9DC'; // Light mint blue/green standard for Monopoly boards
+        ctx.fillStyle = boardColor; 
         ctx.fillRect(0, 0, cw, ch);
         
         ctx.strokeStyle = '#000000';
@@ -161,40 +162,96 @@ export default class BoardController {
         
         if (isCorner) {
             ctx.translate(cw/2, ch/2);
-            if (index === 0) ctx.rotate(-Math.PI/4); 
-            else if (index === 10) ctx.rotate(Math.PI/4); 
-            else if (index === 20) ctx.rotate(3*Math.PI/4); 
+            if (index === 20) ctx.rotate(3*Math.PI/4); 
             else if (index === 30) ctx.rotate(-3*Math.PI/4); 
 
             if (index === 0) {
-                ctx.fillStyle = '#ed1b24';
+                // SALIDA / GO Space
+                ctx.fillStyle = boardColor; // Use uniform board color
+                ctx.fillRect(-cw/2, -ch/2, cw, ch);
+                ctx.strokeRect(-cw/2, -ch/2, cw, ch);
+                
+                // Red Arrow pointing Left
+                ctx.fillStyle = '#E31E24';
                 ctx.beginPath();
-                ctx.moveTo(-100, 100); ctx.lineTo(100, 100); ctx.lineTo(140, 60);
-                ctx.lineTo(100, 20); ctx.lineTo(-100, 20); ctx.closePath();
-                ctx.fill(); ctx.stroke();
+                ctx.moveTo(140, 60); 
+                ctx.lineTo(-40, 60); 
+                ctx.lineTo(-40, 30); 
+                ctx.lineTo(-130, 90); 
+                ctx.lineTo(-40, 150); 
+                ctx.lineTo(-40, 120); 
+                ctx.lineTo(140, 120); 
+                ctx.closePath();
+                ctx.fill(); 
+                ctx.lineWidth = 4;
+                ctx.strokeStyle = '#000';
+                ctx.stroke();
+
+                // "SALIDA" Text
+                ctx.fillStyle = '#E31E24'; // Red text
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.font = 'bold 75px Arial';
+                ctx.fillText("SALIDA", 0, -10);
+                // Text stroke for better legibility
+                ctx.lineWidth = 2;
+                ctx.strokeStyle = '#000';
+                ctx.strokeText("SALIDA", 0, -10);
+                
+                // Extra text
+                ctx.fillStyle = '#000';
+                ctx.font = 'bold 22px Arial';
+                ctx.fillText("COBRE M200 CADA VEZ", 0, -110);
+                ctx.fillText("QUE PASE POR AQUÍ", 0, -80);
+
+            } else if (index === 10) {
+                // CÁRCEL / Jail Space
+                // Background
+                ctx.fillStyle = boardColor; // Uniform board color
+                ctx.fillRect(-cw/2, -ch/2, cw, ch);
+                ctx.strokeRect(-cw/2, -ch/2, cw, ch);
+
+                // Orange jail square in top-right area
+                ctx.fillStyle = '#F47D20'; // Orange
+                ctx.fillRect(-50, -192, 242, 242); 
+                ctx.lineWidth = 6;
+                ctx.strokeStyle = '#000';
+                ctx.strokeRect(-50, -192, 242, 242);
+                
+                // Jail window background
+                ctx.fillStyle = '#ffffff'; // White window
+                ctx.fillRect(0, -142, 142, 80);
+                ctx.strokeRect(0, -142, 142, 80);
+
+                // Jail bars
+                ctx.beginPath();
+                for(let i=1; i<=4; i++) {
+                    ctx.moveTo(0 + i*(142/5), -142);
+                    ctx.lineTo(0 + i*(142/5), -62);
+                }
+                ctx.lineWidth = 4;
+                ctx.stroke();
+
                 ctx.fillStyle = '#000';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
-                ctx.font = 'bold 80px Arial'; 
-                ctx.fillText("SALIDA", 0, -40);
-                ctx.font = 'bold 18px Arial';
-                ctx.fillText("COBRE M200 CADA VEZ", 0, -110);
-                ctx.fillText("QUE PASE POR AQUÍ", 0, -90);
-            } else if (index === 10) {
-                ctx.fillStyle = '#f7941d';
-                ctx.fillRect(10, -180, 170, 170); 
-                ctx.strokeRect(10, -180, 170, 170);
-                ctx.fillStyle = '#000';
                 ctx.font = 'bold 36px Arial';
-                ctx.textAlign = 'center';
-                ctx.fillText("EN LA", -80, -90);
-                ctx.fillText("CÁRCEL", 95, 40);
+                ctx.fillText("EN LA", 71, -165);
+                ctx.fillText("CÁRCEL", 71, -30);
+
                 ctx.save();
-                ctx.translate(-140, 95);
-                ctx.rotate(-Math.PI/2);
-                ctx.font = 'bold 28px Arial';
-                ctx.fillText("SÓLO VISITAS", 0, 0);
+                ctx.translate(-121, -71);
+                ctx.rotate(Math.PI/2);
+                ctx.font = 'bold 36px Arial';
+                ctx.fillText("SÓLO", 0, 0);
                 ctx.restore();
+
+                ctx.save();
+                ctx.translate(71, 121);
+                ctx.font = 'bold 36px Arial';
+                ctx.fillText("VISITAS", 0, 0);
+                ctx.restore();
+
             } else if (index === 20) {
                 ctx.fillStyle = '#000';
                 ctx.textAlign = 'center';
@@ -287,14 +344,15 @@ export default class BoardController {
         canvas.height = ch;
         const ctx = canvas.getContext('2d');
 
-        ctx.fillStyle = '#cde2c9';
+        const boardColor = '#CFE9DC';
+        ctx.fillStyle = boardColor;
         ctx.fillRect(0, 0, cw, ch);
 
         ctx.save();
         ctx.translate(cw/2, ch/2);
         ctx.rotate(-Math.PI / 4);
 
-        ctx.fillStyle = '#ed1b24';
+        ctx.fillStyle = '#E31E24';
         const logoW = 1500;
         const logoH = 320;
         ctx.fillRect(-logoW/2, -logoH/2, logoW, logoH);
@@ -326,7 +384,7 @@ export default class BoardController {
         ctx.save();
         ctx.translate(cw * 0.72, ch * 0.72); 
         ctx.rotate(-Math.PI / 4);
-        ctx.fillStyle = '#f7941d'; 
+        ctx.fillStyle = '#F47D20'; // Orange matched
         ctx.fillRect(-160, -220, 320, 440);
         ctx.strokeStyle = '#000';
         ctx.lineWidth = 4;
@@ -341,7 +399,7 @@ export default class BoardController {
         ctx.save();
         ctx.translate(cw * 0.28, ch * 0.28); 
         ctx.rotate(-Math.PI / 4);
-        ctx.fillStyle = '#aae0fa';
+        ctx.fillStyle = '#8AD0EF'; // Light Blue matched
         ctx.fillRect(-160, -220, 320, 440);
         ctx.strokeStyle = '#000';
         ctx.lineWidth = 4;
@@ -384,7 +442,7 @@ export default class BoardController {
             const spaceData = this.monopolyData[i];
             
             const sideMat = new THREE.MeshStandardMaterial({ 
-                color: '#dae8e5', 
+                color: '#CFE9DC', // Uniform base board color
                 roughness: 1.0,   
                 metalness: 0.0
             });

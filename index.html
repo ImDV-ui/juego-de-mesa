@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Monopoly Algeciras</title>
     <link rel="stylesheet" href="css/layout.css">
     <link rel="stylesheet" href="css/elements.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&display=swap" rel="stylesheet">
 
     <script type="importmap">
         {
@@ -17,22 +19,95 @@
         }
     </script>
 </head>
+
 <body>
 
-<div class="dice-controls">
-    <button class="btn-roll-3d" id="roll-button">🎲 TIRAR DADOS</button>
-</div>
-
-<div class="dice-popup-overlay" id="dice-popup">
-    <div class="dice-popup-content">
-        <h2>Has sacado un</h2>
-        <div class="dice-popup-result" id="dice-result-popup">12</div>
-        <button class="btn-popup-close" id="close-popup-btn">Continuar</button>
+    <div class="dice-controls">
+        <button class="btn-roll-3d" id="roll-button">🎲 TIRAR DADOS</button>
     </div>
-</div>
 
-<div id="game-container" style="position: absolute; top:0; left:0; width:100vw; height:100vh; overflow:hidden;"></div>
+    <div class="dice-popup-overlay" id="dice-popup">
+        <div class="dice-popup-content">
+            <h2>Has sacado un</h2>
+            <div class="dice-popup-result" id="dice-result-popup">12</div>
+            <button class="btn-popup-close" id="close-popup-btn">Continuar</button>
+        </div>
+    </div>
 
-<script type="module" src="js/main.js"></script>
+    <div id="game-container" style="position: absolute; top:0; left:0; width:100vw; height:100vh; overflow:hidden;">
+    </div>
+
+    <!-- UI: Player Wallet (Bank HUD) -->
+    <div id="player-wallet" class="player-wallet">
+        <div class="wallet-header">
+            <h3 id="wallet-player-name">Jugador 1</h3>
+            <div>
+                <span id="wallet-total-money" style="margin-right: 15px;">$0</span>
+                <button id="toggle-wallet-btn" class="btn-wallet-toggle" title="Ocultar/Mostrar Billetera">⬇
+                    Ocultar</button>
+            </div>
+        </div>
+        <div class="wallet-bills">
+            <div class="bill-item">
+                <img src="./assets/dinero/billete 7.jpg" alt="$500" class="bill-img" data-denomination="500">
+                <span class="bill-quantity" id="qty-500">0</span>
+            </div>
+            <div class="bill-item">
+                <img src="./assets/dinero/billete 6.jpg" alt="$100" class="bill-img" data-denomination="100">
+                <span class="bill-quantity" id="qty-100">0</span>
+            </div>
+            <div class="bill-item">
+                <img src="./assets/dinero/billete 5.jpg" alt="$50" class="bill-img" data-denomination="50">
+                <span class="bill-quantity" id="qty-50">0</span>
+            </div>
+            <div class="bill-item">
+                <img src="./assets/dinero/billete 4.jpg" alt="$20" class="bill-img" data-denomination="20">
+                <span class="bill-quantity" id="qty-20">0</span>
+            </div>
+            <div class="bill-item">
+                <img src="./assets/dinero/billete 3.jpg" alt="$10" class="bill-img" data-denomination="10">
+                <span class="bill-quantity" id="qty-10">0</span>
+            </div>
+            <div class="bill-item">
+                <img src="./assets/dinero/billete 2.jpg" alt="$5" class="bill-img" data-denomination="5">
+                <span class="bill-quantity" id="qty-5">0</span>
+            </div>
+            <div class="bill-item">
+                <img src="./assets/dinero/billete 1.jpg" alt="$1" class="bill-img" data-denomination="1">
+                <span class="bill-quantity" id="qty-1">0</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Drag & Drop Payment -->
+    <div id="payment-modal" class="payment-modal hidden">
+        <button id="payment-minimize-btn" class="btn-popup-action" title="Mantén pulsado para ver el tablero">👁️
+            Mantener para ver tablero</button>
+        <div class="payment-content" id="payment-content-box">
+            <h2 id="payment-title">Pago Requerido</h2>
+            
+            <div id="property-card-ui" class="property-card-ui hidden">
+                <div id="property-card-color" class="property-card-color">
+                    <span id="property-card-name">TITULO</span>
+                </div>
+                <div class="property-card-details">
+                    <div class="property-card-icon" id="property-card-icon">🏠</div>
+                    <div class="property-card-price" id="property-card-price">M0</div>
+                </div>
+            </div>
+
+            <p id="payment-reason">Has caído en propiedades</p>
+            <div class="payment-amounts">
+                <div class="amount-box">Deuda: <br><span id="payment-due">$0</span></div>
+                <div class="amount-box">Pagado: <br><span id="payment-paid">$0</span></div>
+            </div>
+            <div id="payment-dropzone" class="payment-dropzone">
+                💵 Arrastra tus billetes aquí para pagar
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="js/main.js"></script>
 </body>
+
 </html>
