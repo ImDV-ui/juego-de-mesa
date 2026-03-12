@@ -18,81 +18,22 @@ export default class DiceController {
         this.stableFrames = 0;
     }
 
+    setupGlobalContext(scene, world, floorPhysicsMaterial) {
+        this.scene = scene;
+        this.world = world;
+        this.floorPhysicsMaterial = floorPhysicsMaterial;
+    }
+
     async init() {
-        console.log('DiceController initializing...');
+        console.log('DiceController initializing (Global Context)...');
         
-        this.container = document.getElementById('dice-container');
-        if (!this.container) {
-            console.error("Dice container not found!");
-            return;
-        }
-
-        // 1. Setup Three.js
-        this.scene = new THREE.Scene();
-        
-        const aspect = this.container.clientWidth / this.container.clientHeight;
-        const frustumSize = 25;
-        this.camera = new THREE.OrthographicCamera(
-            frustumSize * aspect / -2, frustumSize * aspect / 2,
-            frustumSize / 2, frustumSize / -2,
-            0.1, 100
-        );
-        this.camera.position.set(0, 20, 0); // Top-down view
-        this.camera.lookAt(0, 0, 0);
-
-        this.renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-        this.renderer.setSize(this.container.clientWidth, this.container.clientHeight);
-        this.renderer.setPixelRatio(window.devicePixelRatio);
-        this.renderer.shadowMap.enabled = true;
-        this.container.appendChild(this.renderer.domElement);
-
-        // Lights
-        const ambientLight = new THREE.AmbientLight(0xffffff, 1.0);
-        this.scene.add(ambientLight);
-        
-        const dirLight = new THREE.DirectionalLight(0xffffff, 2.0);
-        dirLight.position.set(5, 10, 5);
-        dirLight.castShadow = true;
-        dirLight.shadow.mapSize.width = 1024;
-        dirLight.shadow.mapSize.height = 1024;
-        this.scene.add(dirLight);
-
-        // 2. Setup Cannon-es Physics
-        this.world = new CANNON.World({
-            gravity: new CANNON.Vec3(0, -50, 0),
-        });
-
         // Materials
-        const floorMat = new CANNON.Material();
         const diceMat = new CANNON.Material();
-        const diceFloorContact = new CANNON.ContactMaterial(floorMat, diceMat, {
+        const diceFloorContact = new CANNON.ContactMaterial(this.floorPhysicsMaterial, diceMat, {
             friction: 0.3, 
             restitution: 0.5 
         });
         this.world.addContactMaterial(diceFloorContact);
-
-        // Floor Body (Invisible)
-        const floorShape = new CANNON.Plane();
-        const floorBody = new CANNON.Body({ mass: 0, material: floorMat });
-        floorBody.addShape(floorShape);
-        floorBody.quaternion.setFromEuler(-Math.PI / 2, 0, 0);
-        this.world.addBody(floorBody);
-        
-        // Paredes invisibles
-        const wallShape = new CANNON.Box(new CANNON.Vec3(20, 20, 1));
-        const walls = [
-            { pos: [0, 0, 10], rot: [0, 0, 0] },     
-            { pos: [0, 0, -10], rot: [0, 0, 0] },    
-            { pos: [10, 0, 0], rot: [0, Math.PI/2, 0] },  
-            { pos: [-10, 0, 0], rot: [0, Math.PI/2, 0] }  
-        ];
-        walls.forEach(w => {
-            const wallBody = new CANNON.Body({ mass: 0, material: floorMat });
-            wallBody.addShape(wallShape);
-            wallBody.position.set(...w.pos);
-            wallBody.quaternion.setFromEuler(...w.rot);
-            this.world.addBody(wallBody);
-        });
 
         // 3. Load Custom Asset
         await this.loadDiceModel(diceMat);
@@ -206,8 +147,7 @@ export default class DiceController {
     animate() {
         this.animationFrameId = requestAnimationFrame(this.animate.bind(this));
         
-        const dt = this.clock.getDelta();
-        this.world.step(1/60, Math.min(dt, 0.1), 3); 
+        // Physics stepping is handled globally by BoardController
 
         let allStopped = true;
 
@@ -239,9 +179,7 @@ export default class DiceController {
             }
         }
 
-        if (this.renderer && this.scene && this.camera) {
-            this.renderer.render(this.scene, this.camera);
-        }
+        // Global render is handled by BoardController
     }
 
     calculateResult() {
@@ -288,16 +226,6 @@ export default class DiceController {
     }
 
     onResize() {
-        if (!this.container || !this.camera || !this.renderer) return;
-        const width = this.container.clientWidth;
-        const height = this.container.clientHeight;
-        const aspect = width / height;
-        const frustumSize = 25;
-        this.camera.left = frustumSize * aspect / -2;
-        this.camera.right = frustumSize * aspect / 2;
-        this.camera.top = frustumSize / 2;
-        this.camera.bottom = frustumSize / -2;
-        this.camera.updateProjectionMatrix();
-        this.renderer.setSize(width, height);
+        // Handled globally by BoardController
     }
 }

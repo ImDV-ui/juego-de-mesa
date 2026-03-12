@@ -1,6 +1,7 @@
 import DiceController from './DiceController.js';
 import DragController from './DragController.js';
 import TokenController from './TokenController.js';
+import BoardController from './BoardController.js';
 
 export default class GameController {
     constructor() {
@@ -12,6 +13,7 @@ export default class GameController {
         };
 
         // Initialize sub-controllers
+        this.boardController = new BoardController();
         this.diceController = new DiceController();
         this.dragController = new DragController();
         this.tokenController = new TokenController();
@@ -20,11 +22,26 @@ export default class GameController {
     async init() {
         console.log('GameController initializing...');
         await this.loadProperties();
-        this.setupBoard();
+        
+        // Initialize global 3D environment first
+        await this.boardController.init();
+        
+        // Pass shared resources down
+        this.diceController.setupGlobalContext(
+            this.boardController.scene, 
+            this.boardController.world, 
+            this.boardController.floorPhysicsMaterial
+        );
 
         // Initialize modules
         await this.diceController.init();
         this.dragController.init();
+        
+        // Pass scene and coordinates to tokens
+        this.tokenController.setupGlobalContext(
+            this.boardController.scene,
+            this.boardController.spaceCoordinates
+        );
         this.tokenController.init();
         
         // Spawn the player's car token (player 1)
@@ -59,11 +76,6 @@ export default class GameController {
         } catch (error) {
             console.error('Error loading game properties:', error);
         }
-    }
-
-    setupBoard() {
-        console.log('Setting up board...');
-        // Future logic to generate board spaces and inject them into the DOM
     }
 
     startGameLoop() {
