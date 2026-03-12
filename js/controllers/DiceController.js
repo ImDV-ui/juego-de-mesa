@@ -98,10 +98,28 @@ export default class DiceController {
         await this.loadDiceModel(diceMat);
 
         // 4. Handle UI
-        const rollBtn = document.querySelector('.btn-roll') || document.getElementById('roll-button');
+        const rollBtn = document.getElementById('roll-button');
         if (rollBtn) {
             rollBtn.addEventListener('click', () => {
-                if (!this.isRolling) this.roll();
+                if (!this.isRolling) {
+                    const popupOverlay = document.getElementById('dice-popup');
+                    if(popupOverlay) popupOverlay.classList.remove('show');
+                    this.roll();
+                }
+            });
+        }
+
+        // Handle popup close
+        const closeBtn = document.getElementById('close-popup-btn');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', () => {
+                const popupOverlay = document.getElementById('dice-popup');
+                if(popupOverlay) popupOverlay.classList.remove('show');
+
+                if (this.onRollComplete && this.lastRollTotal) {
+                    this.onRollComplete(this.lastRollResults, this.lastRollTotal);
+                    this.lastRollTotal = null;
+                }
             });
         }
 
@@ -154,8 +172,8 @@ export default class DiceController {
         this.isRolling = true;
         this.stableFrames = 0;
 
-        const resultEl = document.getElementById('dice-result');
-        if (resultEl) resultEl.textContent = '...';
+        const popupResultEl = document.getElementById('dice-result-popup');
+        if (popupResultEl) popupResultEl.textContent = '...';
 
         this.diceBodies.forEach((body, index) => {
             body.type = CANNON.Body.DYNAMIC;
@@ -259,12 +277,14 @@ export default class DiceController {
             total += finalValue;
         });
 
-        const resultEl = document.getElementById('dice-result');
-        if (resultEl) resultEl.textContent = total;
+        const popupResultEl = document.getElementById('dice-result-popup');
+        if (popupResultEl) popupResultEl.textContent = total;
 
-        if (this.onRollComplete) {
-            this.onRollComplete(results, total);
-        }
+        const popupOverlay = document.getElementById('dice-popup');
+        if (popupOverlay) popupOverlay.classList.add('show');
+
+        this.lastRollResults = results;
+        this.lastRollTotal = total;
     }
 
     onResize() {

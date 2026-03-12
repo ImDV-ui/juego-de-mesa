@@ -1,5 +1,6 @@
 import DiceController from './DiceController.js';
 import DragController from './DragController.js';
+import TokenController from './TokenController.js';
 
 export default class GameController {
     constructor() {
@@ -13,6 +14,7 @@ export default class GameController {
         // Initialize sub-controllers
         this.diceController = new DiceController();
         this.dragController = new DragController();
+        this.tokenController = new TokenController();
     }
 
     async init() {
@@ -23,19 +25,30 @@ export default class GameController {
         // Initialize modules
         await this.diceController.init();
         this.dragController.init();
+        this.tokenController.init();
+        
+        // Spawn the player's car token (player 1)
+        await this.tokenController.createPlayerToken(1, './assets/fichas/monopoly_car.glb');
 
-        // Hook into dice roll complete event for turn logic later
-        this.diceController.onRollComplete = (results, total) => {
-            console.log(`Rolled a ${total}! Logic payload goes here.`);
-            this.handlePlayerMove(total);
+        // Hook into dice roll complete event
+        this.diceController.onRollComplete = async (results, total) => {
+            console.log(`Rolled a ${total}! Starting movement...`);
+            await this.handlePlayerMove(total);
         };
 
         this.startGameLoop();
     }
 
-    handlePlayerMove(spaces) {
-        console.log(`Player needs to move ${spaces} spaces! (Logic to be implemented)`);
-        // Logic for TurnController & updating Player model will go here.
+    async handlePlayerMove(spaces) {
+        console.log(`Player moving ${spaces} spaces!`);
+        
+        const rollBtn = document.getElementById('roll-button');
+        if(rollBtn) rollBtn.disabled = true;
+
+        await this.tokenController.moveTokenAnimated(1, spaces);
+        
+        if(rollBtn) rollBtn.disabled = false;
+        // Logic for TurnController & updating Player model properties will continue here.
     }
 
     async loadProperties() {
