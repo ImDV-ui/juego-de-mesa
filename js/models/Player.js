@@ -3,10 +3,10 @@ export default class Player {
         this.id = id;
         this.name = name;
         this.color = color;
-        this.position = 0; // Starts at GO (index 0)
+        this.position = 0; // Empieza en la Salida (índice 0)
         
         // Classic Monopoly breakdown: $1,500
-        // Physical wallet tracking
+        // Rastreo físico de la billetera
         this.wallet = {
             '500': 0,
             '100': 0,
@@ -17,14 +17,16 @@ export default class Player {
             '1': 0
         };
 
+        // Inventario de propiedades compradas
         this.properties = []; 
+        
         this.jailed = false;
         this.jailTurns = 0;
     }
 
     /**
-     * Calculates the total money the player has based on physical bills
-     * @returns {number} Total monetary value
+     * Calcula el dinero total que tiene el jugador basándose en los billetes físicos
+     * @returns {number} Valor monetario total
      */
     getTotalMoney() {
         let total = 0;
@@ -35,7 +37,7 @@ export default class Player {
     }
 
     /**
-     * Adds a specific bill denomination to the wallet
+     * Añade un billete específico a la billetera
      */
     addBill(denomination, count = 1) {
         if (this.wallet[denomination] !== undefined) {
@@ -44,7 +46,7 @@ export default class Player {
     }
 
     /**
-     * Removes a specific bill denomination from the wallet
+     * Elimina un billete específico de la billetera (si tiene suficientes)
      */
     removeBill(denomination, count = 1) {
         if (this.wallet[denomination] !== undefined && this.wallet[denomination] >= count) {

@@ -262,14 +262,14 @@
 }
 
 /* --- COLORES ULTRA-VIBRANTES DE LAS PROPIEDADES --- */
-.bg-brown { background-color: #d35400; } /* Naranja/Marrón cálido brillante */
-.bg-lightblue { background-color: #00d2d3; } /* Cian muy brillante */
-.bg-pink { background-color: #ff9ff3; } /* Rosa chicle puro */
-.bg-orange { background-color: #ff9f43; } /* Naranja radioactivo */
-.bg-red { background-color: #ff4757; } /* Rojo puro */
-.bg-yellow { background-color: #feca57; } /* Amarillo oro/yema */
-.bg-green { background-color: #1dd1a1; } /* Verde esmeralda vivo */
-.bg-darkblue { background-color: #5f27cd; } /* Azul púrpura vibrante */
+.bg-brown { background-color: #d35400; }
+.bg-lightblue { background-color: #00d2d3; }
+.bg-pink { background-color: #ff9ff3; }
+.bg-orange { background-color: #ff9f43; }
+.bg-red { background-color: #ff4757; }
+.bg-yellow { background-color: #feca57; }
+.bg-green { background-color: #1dd1a1; }
+.bg-darkblue { background-color: #5f27cd; }
 
 /* --- HUD DINERO / WALLET --- */
 .player-wallet {
@@ -278,46 +278,67 @@
     left: 0;
     bottom: 0;
     width: 150px;
-    height: 100vh; /* Full height vertical bar */
+    height: 100vh;
     background: rgba(44, 62, 80, 0.9);
-    border-right: 4px solid #222; /* Only border on the right */
-    padding: 20px 25px 20px 10px; /* Extra padding right so pop-outs don't get cut by scrollbars */
+    border-right: 4px solid #222;
     color: white;
     z-index: 20000;
-    box-shadow: 10px 0 20px rgba(0,0,0,0.3); /* Shadow flows right */
+    box-shadow: 10px 0 20px rgba(0,0,0,0.3);
     backdrop-filter: blur(5px);
-    pointer-events: auto;
+    pointer-events: none; /* Permitimos clics al tablero donde no haya billetera */
     transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
-    overflow-y: auto; /* Allow entire column to scroll if screen is too small */
-    overflow-x: hidden; /* Hide popping strictly outside padding bounds */
 }
 
-/* Hide scrollbar visually but keep functionality */
-.player-wallet::-webkit-scrollbar {
+/* Nueva área interna para permitir hacer scroll de los billetes sin cortar el botón */
+.wallet-scroll-area {
+    width: 100%;
+    height: 100%;
+    padding: 20px 25px 20px 10px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    box-sizing: border-box;
+    pointer-events: auto; /* Reactivamos los eventos de ratón aquí */
+}
+
+.wallet-scroll-area::-webkit-scrollbar {
     width: 0px;
 }
 
 .player-wallet.collapsed {
-    transform: translateX(calc(-100% + 55px)); /* Hide to the left, leaving 55px to show the button/slivers */
+    transform: translateX(-100%); /* Ahora se oculta completamente al ras */
 }
 
-/* Ensure the button can be seen and clicked when collapsed */
-.player-wallet.collapsed .btn-wallet-toggle {
+.btn-wallet-toggle {
     position: absolute;
-    right: -105px;
     top: 20px;
-    width: 105px; /* Fixed width horizontal tab */
+    right: -105px; /* Lo empujamos 105px hacia afuera, pegado al borde derecho */
+    width: 105px;
+    background: #ff4757;
+    color: white;
+    border: 3px solid #222;
+    border-left: none; /* Se fusiona con el borde de la billetera */
     padding: 10px 15px;
-    white-space: nowrap;
-    border-radius: 0 10px 10px 0;
-    box-shadow: 4px 4px 0 #222;
-    border-left: none;
     font-size: 0.9rem;
+    font-weight: 900;
+    border-radius: 0 10px 10px 0;
+    cursor: pointer;
+    box-shadow: 4px 4px 0 #222;
+    transition: all 0.1s;
+    text-transform: uppercase;
+    pointer-events: auto;
 }
 
+.btn-wallet-toggle:hover {
+    transform: translateX(3px); /* Pequeño salto a la derecha al hacer hover */
+    background: #ff6b81;
+}
+
+.btn-wallet-toggle:active {
+    box-shadow: 0 0 0 #222;
+}
 
 .wallet-header {
     display: flex;
@@ -343,34 +364,7 @@
     font-weight: 900;
     color: #2ed573;
     text-shadow: 2px 2px 0 #222;
-    margin-right: 0 !important; /* Force override inline HTML */
     display: block;
-}
-
-.btn-wallet-toggle {
-    background: #ff4757;
-    color: white;
-    border: 3px solid #222;
-    padding: 5px 10px;
-    font-size: 0.8rem;
-    font-weight: 900;
-    border-radius: 10px;
-    cursor: pointer;
-    box-shadow: 0 4px 0 #222;
-    transition: all 0.1s;
-    text-transform: uppercase;
-    width: 100%;
-}
-
-.btn-wallet-toggle:hover {
-    transform: translateY(2px);
-    box-shadow: 0 2px 0 #222;
-    background: #ff6b81;
-}
-
-.btn-wallet-toggle:active {
-    transform: translateY(4px);
-    box-shadow: 0 0 0 #222;
 }
 
 .wallet-bills {
@@ -380,6 +374,7 @@
     padding-top: 15px;
     padding-bottom: 25px;
     flex-grow: 1; 
+    gap: 15px; /* SEPARACIÓN LIMPIA ENTRE BILLETES */
 }
 
 .bill-item {
@@ -387,29 +382,24 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: -55px; /* Softer vertical stagger overlap */
+    /* margin-top: -55px;  <-- ELIMINADO PARA QUE NO SE AMONTONEN */
     transition: transform 0.2s, z-index 0.2s;
     pointer-events: auto;
 }
 
-/* First card doesn't need negative top margin */
-.bill-item:first-child {
-    margin-top: 0;
-}
-
 .bill-item:hover {
-    transform: translateX(25px) scale(1.15); /* Pop out to the right more pronounced */
+    transform: scale(1.15); /* Al no estar amontonados, solo los agrandamos un poco */
     z-index: 100;
 }
 
 .bill-item img {
-    width: 90px; /* Card size / Larger bill size */
+    width: 90px;
     height: auto;
     border-radius: 6px;
     box-shadow: 2px 5px 15px rgba(0,0,0,0.6);
     border: 2px solid #fff;
     transition: transform 0.2s;
-    background: #fff; /* Ensure transparent parts have a card back if any */
+    background: #fff;
 }
 
 .bill-quantity {

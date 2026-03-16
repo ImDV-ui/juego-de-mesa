@@ -37,49 +37,50 @@
     <div id="game-container" style="position: absolute; top:0; left:0; width:100vw; height:100vh; overflow:hidden;">
     </div>
 
-    <!-- UI: Player Wallet (Bank HUD) -->
     <div id="player-wallet" class="player-wallet">
-        <div class="wallet-header">
-            <h3 id="wallet-player-name">Jugador 1</h3>
-            <div>
-                <span id="wallet-total-money" style="margin-right: 15px;">$0</span>
-                <button id="toggle-wallet-btn" class="btn-wallet-toggle" title="Ocultar/Mostrar Billetera">⬇
-                    Ocultar</button>
+        
+        <button id="toggle-wallet-btn" class="btn-wallet-toggle" title="Ocultar/Mostrar Billetera">⬅ Ocultar</button>
+
+        <div class="wallet-scroll-area">
+            <div class="wallet-header">
+                <h3 id="wallet-player-name">Jugador 1</h3>
+                <div>
+                    <span id="wallet-total-money">$0</span>
+                </div>
             </div>
-        </div>
-        <div class="wallet-bills">
-            <div class="bill-item">
-                <img src="./assets/dinero/billete 7.jpg" alt="$500" class="bill-img" data-denomination="500">
-                <span class="bill-quantity" id="qty-500">0</span>
-            </div>
-            <div class="bill-item">
-                <img src="./assets/dinero/billete 6.jpg" alt="$100" class="bill-img" data-denomination="100">
-                <span class="bill-quantity" id="qty-100">0</span>
-            </div>
-            <div class="bill-item">
-                <img src="./assets/dinero/billete 5.jpg" alt="$50" class="bill-img" data-denomination="50">
-                <span class="bill-quantity" id="qty-50">0</span>
-            </div>
-            <div class="bill-item">
-                <img src="./assets/dinero/billete 4.jpg" alt="$20" class="bill-img" data-denomination="20">
-                <span class="bill-quantity" id="qty-20">0</span>
-            </div>
-            <div class="bill-item">
-                <img src="./assets/dinero/billete 3.jpg" alt="$10" class="bill-img" data-denomination="10">
-                <span class="bill-quantity" id="qty-10">0</span>
-            </div>
-            <div class="bill-item">
-                <img src="./assets/dinero/billete 2.jpg" alt="$5" class="bill-img" data-denomination="5">
-                <span class="bill-quantity" id="qty-5">0</span>
-            </div>
-            <div class="bill-item">
-                <img src="./assets/dinero/billete 1.jpg" alt="$1" class="bill-img" data-denomination="1">
-                <span class="bill-quantity" id="qty-1">0</span>
+            <div class="wallet-bills">
+                <div class="bill-item">
+                    <img src="./assets/dinero/billete 7.jpg" alt="$500" class="bill-img" data-denomination="500">
+                    <span class="bill-quantity" id="qty-500">0</span>
+                </div>
+                <div class="bill-item">
+                    <img src="./assets/dinero/billete 6.jpg" alt="$100" class="bill-img" data-denomination="100">
+                    <span class="bill-quantity" id="qty-100">0</span>
+                </div>
+                <div class="bill-item">
+                    <img src="./assets/dinero/billete 5.jpg" alt="$50" class="bill-img" data-denomination="50">
+                    <span class="bill-quantity" id="qty-50">0</span>
+                </div>
+                <div class="bill-item">
+                    <img src="./assets/dinero/billete 4.jpg" alt="$20" class="bill-img" data-denomination="20">
+                    <span class="bill-quantity" id="qty-20">0</span>
+                </div>
+                <div class="bill-item">
+                    <img src="./assets/dinero/billete 3.jpg" alt="$10" class="bill-img" data-denomination="10">
+                    <span class="bill-quantity" id="qty-10">0</span>
+                </div>
+                <div class="bill-item">
+                    <img src="./assets/dinero/billete 2.jpg" alt="$5" class="bill-img" data-denomination="5">
+                    <span class="bill-quantity" id="qty-5">0</span>
+                </div>
+                <div class="bill-item">
+                    <img src="./assets/dinero/billete 1.jpg" alt="$1" class="bill-img" data-denomination="1">
+                    <span class="bill-quantity" id="qty-1">0</span>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal: Drag & Drop Payment -->
     <div id="payment-modal" class="payment-modal hidden">
         <button id="payment-minimize-btn" class="btn-popup-action" title="Mantén pulsado para ver el tablero">👁️
             Mantener para ver tablero</button>

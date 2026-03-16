@@ -1,38 +1,71 @@
 [
   {
-    "id": "prop_1",
+    "id": 0,
+    "name": "SALIDA",
+    "type": "go"
+  },
+  {
+    "id": 1,
     "name": "Old Town Road",
+    "color": "#d35400",
     "price": 60,
-    "group": "brown",
     "rent": [2, 10, 30, 90, 160, 250],
     "mortgage": 30,
-    "houseCost": 50
+    "houseCost": 50,
+    "type": "street"
   },
   {
-    "id": "prop_2",
+    "id": 2,
+    "name": "Caja de Comunidad",
+    "type": "chest"
+  },
+  {
+    "id": 3,
     "name": "Main Street",
+    "color": "#d35400",
     "price": 60,
-    "group": "brown",
     "rent": [4, 20, 60, 180, 320, 450],
     "mortgage": 30,
-    "houseCost": 50
+    "houseCost": 50,
+    "type": "street"
   },
   {
-    "id": "prop_3",
+    "id": 4,
+    "name": "Impuesto sobre la Renta",
+    "type": "tax",
+    "price": 200
+  },
+  {
+    "id": 5,
+    "name": "Estación del Sur",
+    "type": "station",
+    "price": 200,
+    "rent": [25, 50, 100, 200],
+    "mortgage": 100
+  },
+  {
+    "id": 6,
     "name": "Park Avenue",
+    "color": "#00d2d3",
     "price": 100,
-    "group": "cyan",
     "rent": [6, 30, 90, 270, 400, 550],
     "mortgage": 50,
-    "houseCost": 50
+    "houseCost": 50,
+    "type": "street"
   },
   {
-    "id": "prop_4",
+    "id": 7,
+    "name": "Suerte",
+    "type": "chance"
+  },
+  {
+    "id": 8,
     "name": "Broadway",
+    "color": "#00d2d3",
     "price": 120,
-    "group": "cyan",
     "rent": [8, 40, 100, 300, 450, 600],
     "mortgage": 60,
-    "houseCost": 50
+    "houseCost": 50,
+    "type": "street"
   }
 ]
