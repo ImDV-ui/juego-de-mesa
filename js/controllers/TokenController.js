@@ -33,7 +33,7 @@ export default class TokenController {
                     const center = box.getCenter(new THREE.Vector3());
                     const size = box.getSize(new THREE.Vector3());
                     const maxDim = Math.max(size.x, size.y, size.z);
-                    const scale = 2.5 / maxDim; // Fit within 3D board units (space size is 4.5)
+                    const scale = 2.0 / maxDim; // Slightly smaller to fit 2x2 (was 2.5)
                     model.scale.set(scale, scale, scale);
                     model.position.sub(center.multiplyScalar(scale)); // Center it
                     
@@ -65,6 +65,7 @@ export default class TokenController {
 
         const token = {
             id: playerId,
+            gridIndex: this.tokens.length, // 0, 1, 2, 3
             model: modelObj,
             currentPosition: 0,
             targetPosition: 0
@@ -78,14 +79,37 @@ export default class TokenController {
         return token;
     }
 
+    getOffset(gridIndex, posIndex) {
+        // Determinamos el desplazamiento basado en el índice del jugador (0-3)
+        // Usamos una cuadrícula de 2x2
+        const offsetX = (gridIndex % 2 === 0 ? -1.1 : 1.1);
+        const offsetZ = (gridIndex < 2 ? -1.1 : 1.1);
+        
+        const side = Math.floor(posIndex / 10);
+        
+        // Rotamos el offset según el lado del tablero para que siempre queden "paralelos"
+        if (side === 0 || side === 2) {
+            return { x: offsetX, z: offsetZ };
+        } else {
+            // En los laterales (11-19 y 31-39), intercambiamos ejes
+            return { x: offsetZ, z: offsetX };
+        }
+    }
+
     updateToken3DPosition(token) {
         if (!token.model) return;
         
-        const targetCoord = this.spaceCoordinates[token.currentPosition];
-        if(!targetCoord) return;
+        const baseCoord = this.spaceCoordinates[token.currentPosition];
+        if(!baseCoord) return;
 
-        // Position model
-        token.model.position.set(targetCoord.x, targetCoord.y, targetCoord.z);
+        const offset = this.getOffset(token.gridIndex, token.currentPosition);
+        
+        // Position model with offset
+        token.model.position.set(
+            baseCoord.x + offset.x, 
+            baseCoord.y, 
+            baseCoord.z + offset.z
+        );
 
         // Update 3D Model Rotation based on board side
         if (token.currentPosition >= 0 && token.currentPosition < 10) {
@@ -118,7 +142,8 @@ export default class TokenController {
         return new Promise(resolve => {
             const startPos = token.model.position.clone();
             const endCoord = this.spaceCoordinates[token.currentPosition];
-            const endPos = new THREE.Vector3(endCoord.x, endCoord.y, endCoord.z);
+            const offset = this.getOffset(token.gridIndex, token.currentPosition);
+            const endPos = new THREE.Vector3(endCoord.x + offset.x, endCoord.y, endCoord.z + offset.z);
             
             this.updateToken3DPosition(token);
             token.model.position.copy(startPos); 

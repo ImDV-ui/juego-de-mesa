@@ -480,6 +480,72 @@ export default class BoardController {
         innerMesh.position.y = -0.49; 
         innerMesh.receiveShadow = true;
         this.scene.add(innerMesh);
+
+        this.addCardDecks();
+    }
+
+    addCardDecks() {
+        const loader = new THREE.TextureLoader();
+        
+        // Cargar texturas
+        const luckTexture = loader.load('./assets/cartas/suerte.png');
+        const chestTexture = loader.load('./assets/cartas/comunidad.png');
+        
+        // Rotar texturas para que queden bien sobre el mazo desde la perspectiva del jugador
+        [luckTexture, chestTexture].forEach(tex => {
+            tex.center.set(0.5, 0.5);
+            tex.rotation = -Math.PI / 2;
+        });
+        
+        // Dimensiones del mazo (Más grandes para ocupar casi todo el recuadro)
+        const deckW = 8.5;  
+        const deckH = 0.8;
+        const deckD = 12.0; 
+        const deckGeo = new THREE.BoxGeometry(deckW, deckH, deckD);
+        
+        // Materiales para el mazo
+        const sideMat = new THREE.MeshStandardMaterial({ color: '#f5f5f5', roughness: 0.9 });
+        const bottomMat = new THREE.MeshStandardMaterial({ color: '#ddd', roughness: 1.0 });
+        
+        // Suerte Deck
+        const luckMaterials = [
+            sideMat, sideMat, 
+            new THREE.MeshStandardMaterial({ map: luckTexture, roughness: 0.5 }), 
+            bottomMat, sideMat, sideMat
+        ];
+        const luckDeck = new THREE.Mesh(deckGeo, luckMaterials);
+        luckDeck.position.set(9.2, 0.4, 9.2);
+        luckDeck.rotation.y = Math.PI / 4;
+        luckDeck.castShadow = true;
+        luckDeck.receiveShadow = true;
+        this.scene.add(luckDeck);
+        
+        // Community Chest Deck
+        const chestMaterials = [
+            sideMat, sideMat, 
+            new THREE.MeshStandardMaterial({ map: chestTexture, roughness: 0.5 }), 
+            bottomMat, sideMat, sideMat
+        ];
+        const chestDeck = new THREE.Mesh(deckGeo, chestMaterials);
+        chestDeck.position.set(-9.2, 0.4, -9.2);
+        chestDeck.rotation.y = Math.PI / 4;
+        chestDeck.castShadow = true;
+        chestDeck.receiveShadow = true;
+        this.scene.add(chestDeck);
+
+        // Añadir una pequeña "pila" de 3-4 cartas extras debajo
+        for(let i=1; i<=4; i++) {
+            const offset = i * 0.1;
+            const luckExtra = luckDeck.clone();
+            luckExtra.position.y -= offset;
+            luckExtra.rotation.y += (Math.random() - 0.5) * 0.01;
+            this.scene.add(luckExtra);
+
+            const chestExtra = chestDeck.clone();
+            chestExtra.position.y -= offset;
+            chestExtra.rotation.y += (Math.random() - 0.5) * 0.01;
+            this.scene.add(chestExtra);
+        }
     }
 
     animate() {

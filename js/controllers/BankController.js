@@ -136,21 +136,47 @@ export default class BankController {
      * @param {Array} allBoardData The global board data to check group size
      */
     calculateRent(property, ownerProperties, allBoardData) {
-        if (!property.color) return 0; // Not a street
+        if (!property.rent || !property.rent.length) return 0;
+
+        let rentLevel = 0; // Default: base rent
         
-        // Base rent could be stored on property, assume 10% of price for stub logic
-        const basePrice = parseInt(property.price.replace(/\D/g, ''));
-        let rent = Math.floor(basePrice * 0.10); 
+        // Determinar el nivel de alquiler basado en casas o monopolio
+        if (property.type === 'street') {
+            if (property.houses > 0) {
+                rentLevel = property.houses; // 1 house = rent[1], 2 = rent[2]... 5 (hotel) = rent[5]
+            }
+        } else if (property.type === 'station') {
+            const ownedStations = ownerProperties.filter(p => p.type === 'station').length;
+            rentLevel = Math.min(ownedStations - 1, 3); // 1 = rent[0], 2 = rent[1], etc.
+        }
 
-        // Check for monopoly (double rent)
-        const myColorCount = ownerProperties.filter(p => p.color === property.color).length;
-        const totalColorCount = allBoardData.filter(p => p.color === property.color).length;
+        let rent = property.rent[rentLevel];
 
-        if (myColorCount === totalColorCount && totalColorCount > 0) {
-            console.log(`Monopoly Double Rent active for ${property.name}!`);
-            rent *= 2;
+        // Regla Monopoly: Doble alquiler en alquiler base si tiene todo el color y 0 casas
+        if (property.type === 'street' && property.houses === 0) {
+            const myColorCount = ownerProperties.filter(p => p.color === property.color).length;
+            const totalColorCount = allBoardData.filter(p => p.color === property.color).length;
+            if (myColorCount === totalColorCount && totalColorCount > 0) {
+                rent *= 2;
+                console.log(`¡Alquiler doble por Monopolio! ($${rent})`);
+            }
         }
 
         return rent;
+    }
+
+    /**
+     * Handles buying a house
+     */
+    buyHouse(player, property) {
+        const cost = property.houseCost;
+        if (player.getTotalMoney() < cost) return false;
+        
+        if (this.payBank(player, cost)) {
+            property.houses = (property.houses || 0) + 1;
+            console.log(`${player.name} compró una mejora para ${property.name}. Ahora tiene ${property.houses} casas/hotel.`);
+            return true;
+        }
+        return false;
     }
 }

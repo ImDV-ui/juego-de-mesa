@@ -1,71 +1,49 @@
 [
-  {
-    "id": 0,
-    "name": "SALIDA",
-    "type": "go"
-  },
-  {
-    "id": 1,
-    "name": "Old Town Road",
-    "color": "#d35400",
-    "price": 60,
-    "rent": [2, 10, 30, 90, 160, 250],
-    "mortgage": 30,
-    "houseCost": 50,
-    "type": "street"
-  },
-  {
-    "id": 2,
-    "name": "Caja de Comunidad",
-    "type": "chest"
-  },
-  {
-    "id": 3,
-    "name": "Main Street",
-    "color": "#d35400",
-    "price": 60,
-    "rent": [4, 20, 60, 180, 320, 450],
-    "mortgage": 30,
-    "houseCost": 50,
-    "type": "street"
-  },
-  {
-    "id": 4,
-    "name": "Impuesto sobre la Renta",
-    "type": "tax",
-    "price": 200
-  },
-  {
-    "id": 5,
-    "name": "Estación del Sur",
-    "type": "station",
-    "price": 200,
-    "rent": [25, 50, 100, 200],
-    "mortgage": 100
-  },
-  {
-    "id": 6,
-    "name": "Park Avenue",
-    "color": "#00d2d3",
-    "price": 100,
-    "rent": [6, 30, 90, 270, 400, 550],
-    "mortgage": 50,
-    "houseCost": 50,
-    "type": "street"
-  },
-  {
-    "id": 7,
-    "name": "Suerte",
-    "type": "chance"
-  },
-  {
-    "id": 8,
-    "name": "Broadway",
-    "color": "#00d2d3",
-    "price": 120,
-    "rent": [8, 40, 100, 300, 450, 600],
-    "mortgage": 60,
-    "houseCost": 50,
-    "type": "street"
-  }
+  { "id": 0, "name": "SALIDA", "type": "go" },
+
+  { "id": 1,  "name": "Calle Tarifa",       "type": "street",  "color": "#6C3717", "price": 60,  "rent": [2, 10, 30, 90, 160, 250], "mortgage": 30,  "houseCost": 50  },
+  { "id": 2,  "name": "Caja Comunidad",     "type": "chest"  },
+  { "id": 3,  "name": "San Antonio",        "type": "street",  "color": "#6C3717", "price": 60,  "rent": [4, 20, 60, 180, 320, 450], "mortgage": 30,  "houseCost": 50  },
+  { "id": 4,  "name": "Impuesto Renta",     "type": "tax",     "price": 200 },
+  { "id": 5,  "name": "Estación Renfe",     "type": "station", "price": 200, "rent": [25, 50, 100, 200], "mortgage": 100 },
+  { "id": 6,  "name": "C. Convento",        "type": "street",  "color": "#8AD0EF", "price": 100, "rent": [6, 30, 90, 270, 400, 550], "mortgage": 50,  "houseCost": 50  },
+  { "id": 7,  "name": "? Suerte",           "type": "chance" },
+  { "id": 8,  "name": "Regino Mtz.",        "type": "street",  "color": "#8AD0EF", "price": 100, "rent": [6, 30, 90, 270, 400, 550], "mortgage": 50,  "houseCost": 50  },
+  { "id": 9,  "name": "Plaza Alta",         "type": "street",  "color": "#8AD0EF", "price": 120, "rent": [8, 40, 100, 300, 450, 600], "mortgage": 60,  "houseCost": 50  },
+
+  { "id": 10, "name": "CÁRCEL",             "type": "jail" },
+
+  { "id": 11, "name": "Las Acacias",        "type": "street",  "color": "#D63384", "price": 140, "rent": [10, 50, 150, 450, 625, 750], "mortgage": 70,  "houseCost": 100 },
+  { "id": 12, "name": "Endesa",             "type": "utility", "price": 150, "rent": [4, 10], "mortgage": 75 },
+  { "id": 13, "name": "Paseo de C.",        "type": "street",  "color": "#D63384", "price": 140, "rent": [10, 50, 150, 450, 625, 750], "mortgage": 70,  "houseCost": 100 },
+  { "id": 14, "name": "V. del Carmen",      "type": "street",  "color": "#D63384", "price": 160, "rent": [12, 60, 180, 500, 700, 900], "mortgage": 80,  "houseCost": 100 },
+  { "id": 15, "name": "Puerto",             "type": "station", "price": 200, "rent": [25, 50, 100, 200], "mortgage": 100 },
+  { "id": 16, "name": "Parque M. Cristina", "type": "street",  "color": "#F47D20", "price": 180, "rent": [14, 70, 200, 550, 750, 950], "mortgage": 90,  "houseCost": 100 },
+  { "id": 17, "name": "Caja Comunidad",     "type": "chest"  },
+  { "id": 18, "name": "Pza. Verboom",       "type": "street",  "color": "#F47D20", "price": 180, "rent": [14, 70, 200, 550, 750, 950], "mortgage": 90,  "houseCost": 100 },
+  { "id": 19, "name": "Calle Sevilla",      "type": "street",  "color": "#F47D20", "price": 200, "rent": [16, 80, 220, 600, 800, 1000], "mortgage": 100, "houseCost": 100 },
+
+  { "id": 20, "name": "PARKING GRATIS",     "type": "parking" },
+
+  { "id": 21, "name": "El Rinconcillo",     "type": "street",  "color": "#E31E24", "price": 220, "rent": [18, 90, 250, 700, 875, 1050], "mortgage": 110, "houseCost": 150 },
+  { "id": 22, "name": "? Suerte",           "type": "chance" },
+  { "id": 23, "name": "S. José Artesano",   "type": "street",  "color": "#E31E24", "price": 220, "rent": [18, 90, 250, 700, 875, 1050], "mortgage": 110, "houseCost": 150 },
+  { "id": 24, "name": "La Ermita",          "type": "street",  "color": "#E31E24", "price": 240, "rent": [20, 100, 300, 750, 925, 1100], "mortgage": 120, "houseCost": 150 },
+  { "id": 25, "name": "Est. Autobús",       "type": "station", "price": 200, "rent": [25, 50, 100, 200], "mortgage": 100 },
+  { "id": 26, "name": "Getares",            "type": "street",  "color": "#FFDE00", "price": 260, "rent": [22, 110, 330, 800, 975, 1150], "mortgage": 130, "houseCost": 150 },
+  { "id": 27, "name": "San García",         "type": "street",  "color": "#FFDE00", "price": 260, "rent": [22, 110, 330, 800, 975, 1150], "mortgage": 130, "houseCost": 150 },
+  { "id": 28, "name": "Emalgesa",           "type": "utility", "price": 150, "rent": [4, 10], "mortgage": 75 },
+  { "id": 29, "name": "El Saladillo",       "type": "street",  "color": "#FFDE00", "price": 280, "rent": [24, 120, 360, 850, 1025, 1200], "mortgage": 140, "houseCost": 150 },
+
+  { "id": 30, "name": "A LA CÁRCEL",        "type": "go-to-jail" },
+
+  { "id": 31, "name": "Pelayo",             "type": "street",  "color": "#169A4C", "price": 300, "rent": [26, 130, 390, 900, 1100, 1275], "mortgage": 150, "houseCost": 200 },
+  { "id": 32, "name": "El Cobre",           "type": "street",  "color": "#169A4C", "price": 300, "rent": [26, 130, 390, 900, 1100, 1275], "mortgage": 150, "houseCost": 200 },
+  { "id": 33, "name": "Caja Comunidad",     "type": "chest"  },
+  { "id": 34, "name": "Los Pastores",       "type": "street",  "color": "#169A4C", "price": 320, "rent": [28, 150, 450, 1000, 1200, 1400], "mortgage": 160, "houseCost": 200 },
+  { "id": 35, "name": "Helipuerto",         "type": "station", "price": 200, "rent": [25, 50, 100, 200], "mortgage": 100 },
+  { "id": 36, "name": "? Suerte",           "type": "chance" },
+  { "id": 37, "name": "Punta Carnero",      "type": "street",  "color": "#1262B3", "price": 350, "rent": [35, 175, 500, 1100, 1300, 1500], "mortgage": 175, "houseCost": 200 },
+  { "id": 38, "name": "Impuesto Lujo",      "type": "tax",     "price": 100 },
+  { "id": 39, "name": "Bahía Algeciras",    "type": "street",  "color": "#1262B3", "price": 400, "rent": [50, 200, 600, 1400, 1700, 2000], "mortgage": 200, "houseCost": 200 }
 ]

@@ -22,7 +22,38 @@
 
 <body>
 
+    <!-- Menú de Configuración Inicial -->
+    <div id="setup-overlay" class="setup-overlay">
+        <div class="setup-card">
+            <div class="setup-header">
+                <h1>MONOPOLY</h1>
+                <p>ALGECIRAS EDITION</p>
+            </div>
+            
+            <div class="setup-body">
+                <div class="setup-section">
+                    <label>¿Cuántos jugadores seréis?</label>
+                    <div class="player-count-chips">
+                        <label class="count-chip"><input type="radio" name="p-count" value="2"> <span>2</span></label>
+                        <label class="count-chip"><input type="radio" name="p-count" value="3"> <span>3</span></label>
+                        <label class="count-chip"><input type="radio" name="p-count" value="4" checked> <span>4</span></label>
+                    </div>
+                </div>
+
+                <div id="player-configs" class="player-configs">
+                    <!-- Generado dinámicamente -->
+                </div>
+            </div>
+
+            <div class="setup-footer">
+                <button id="btn-start-game" class="btn-start-game">INICIAR PARTIDA</button>
+            </div>
+        </div>
+    </div>
+
+
     <div class="dice-controls">
+        <div id="turn-banner" class="turn-banner">Turno de: <span id="current-player-name">Jugador 1</span></div>
         <button class="btn-roll-3d" id="roll-button">🎲 TIRAR DADOS</button>
     </div>
 
@@ -48,6 +79,8 @@
                     <span id="wallet-total-money">$0</span>
                 </div>
             </div>
+
+            <!-- BILLETES -->
             <div class="wallet-bills">
                 <div class="bill-item">
                     <img src="./assets/dinero/billete 7.jpg" alt="$500" class="bill-img" data-denomination="500">
@@ -78,6 +111,9 @@
                     <span class="bill-quantity" id="qty-1">0</span>
                 </div>
             </div>
+
+
+
         </div>
     </div>
 
@@ -86,14 +122,18 @@
             Mantener para ver tablero</button>
         <div class="payment-content" id="payment-content-box">
             <h2 id="payment-title">Pago Requerido</h2>
-            
+
             <div id="property-card-ui" class="property-card-ui hidden">
                 <div id="property-card-color" class="property-card-color">
                     <span id="property-card-name">TITULO</span>
                 </div>
                 <div class="property-card-details">
                     <div class="property-card-icon" id="property-card-icon">🏠</div>
+                    <div class="property-card-price-label">Precio</div>
                     <div class="property-card-price" id="property-card-price">M0</div>
+                    <div class="property-card-rent-table" id="property-card-rent-table">
+                        <!-- Filas generadas por JS -->
+                    </div>
                 </div>
             </div>
 
@@ -105,6 +145,63 @@
             <div id="payment-dropzone" class="payment-dropzone">
                 💵 Arrastra tus billetes aquí para pagar
             </div>
+            
+            <div id="house-actions" class="house-actions hidden">
+                <p>¡Tienes el monopolio! Puedes mejorar esta propiedad.</p>
+                <div class="house-buy-row">
+                    <span>Coste Casa: <span id="house-cost-val">$50</span></span>
+                    <button id="btn-buy-house" class="btn-action">🏠 Comprar Casa</button>
+                </div>
+            </div>
+
+            <div class="modal-buttons">
+                <button id="btn-cancel-buy" class="btn-cancel-buy hidden">✖ No comprar</button>
+                <button id="btn-skip-manage" class="btn-cancel-buy hidden">✖ Terminar Turno</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Cartas (Suerte/Comunidad) -->
+    <div id="card-modal" class="card-modal hidden">
+        <div class="card-content">
+            <div id="card-type-header" class="card-type-luck">
+                <h2 id="card-type-title">SUERTE</h2>
+            </div>
+            <div class="card-body">
+                <p id="card-text">Cargando mensaje...</p>
+                <div class="card-icon" id="card-icon">❓</div>
+            </div>
+            <div class="card-footer">
+                <button id="btn-card-accept" class="btn-card-accept">ACEPTAR</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- PANEL DE PROPIEDADES (top-right) -->
+    <div id="inventory-panel" class="inv-panel">
+        <button id="inv-toggle-btn" class="inv-toggle-btn">🏘️ Propiedades <span id="inv-count" class="inv-count">0</span> <span class="inv-arrow">▼</span></button>
+        <div id="inv-panel-body" class="inv-panel-body">
+            <div id="inventory-cards" class="inventory-cards">
+                <p class="inventory-empty">Sin propiedades aún</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DETALLE DE CARTA (centrado) -->
+    <div id="prop-detail-modal" class="prop-detail-modal hidden">
+        <div class="prop-detail-backdrop" id="prop-detail-backdrop"></div>
+        <div class="prop-detail-card" id="prop-detail-card">
+            <div class="prop-detail-color" id="prop-detail-color">
+                <span class="prop-detail-name" id="prop-detail-name">NOMBRE</span>
+            </div>
+            <div class="prop-detail-body">
+                <div class="prop-detail-icon" id="prop-detail-icon">🏠</div>
+                <table class="prop-detail-table" id="prop-detail-table">
+                    <!-- Generado por JS -->
+                </table>
+            </div>
+            <button class="prop-detail-close" id="prop-detail-close">✖ Cerrar</button>
         </div>
     </div>
 

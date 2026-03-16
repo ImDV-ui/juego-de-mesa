@@ -1,0 +1,35 @@
+{
+    "luck": [
+        { "text": "¡Avanza hasta la casilla de SALIDA! (Cobra M200)", "action": "move", "target": 0 },
+        { "text": "Avanza hasta la Plaza Alta. Si pasas por la Salida, cobra M200.", "action": "move", "target": 9 },
+        { "text": "Avanza hasta la Calle Sevilla. Si pasas por la Salida, cobra M200.", "action": "move", "target": 19 },
+        { "text": "Avanza al Ferrocarril más próximo. Si no tiene dueño, puedes comprárselo a la Banca.", "action": "move_nearest", "type": "station" },
+        { "text": "La Banca te paga un dividendo de M50.", "action": "receive", "amount": 50 },
+        { "text": "Retrocede 3 casillas.", "action": "move_relative", "steps": -3 },
+        { "text": "¡Vete a la Cárcel! Ve directamente sin pasar por la salida y sin cobrar los M200.", "action": "jail" },
+        { "text": "Haz reparaciones generales en todas tus propiedades: M25 por cada casa, M100 por cada hotel.", "action": "repairs", "house": 25, "hotel": 100 },
+        { "text": "Multa por exceso de velocidad: M15.", "action": "pay", "amount": 15 },
+        { "text": "Avanza hasta el Helipuerto (Estación). Si pasas por la Salida, cobra M200.", "action": "move", "target": 35 },
+        { "text": "Avanza hasta la Bahía de Algeciras.", "action": "move", "target": 39 },
+        { "text": "Has sido elegido Presidente del Consejo. Paga M50 a cada jugador.", "action": "pay_each", "amount": 50 },
+        { "text": "Tu préstamo de construcción vence. Recibe M150.", "action": "receive", "amount": 150 },
+        { "text": "Has ganado un concurso de crucigramas. Recibe M100.", "action": "receive", "amount": 100 }
+    ],
+    "community": [
+        { "text": "¡Avanza hasta la casilla de SALIDA! (Cobra M200)", "action": "move", "target": 0 },
+        { "text": "Error de la Banca a tu favor. Recibe M200.", "action": "receive", "amount": 200 },
+        { "text": "Gastos médicos. Paga M50.", "action": "pay", "amount": 50 },
+        { "text": "Por la venta de acciones recibes M50.", "action": "receive", "amount": 50 },
+        { "text": "¡Vete a la Cárcel! Ve directamente sin pasar por la salida y sin cobrar los M200.", "action": "jail" },
+        { "text": "Gran noche de la Ópera. Recibe M50 de cada jugador por las entradas.", "action": "receive_each", "amount": 50 },
+        { "text": "Fondo de vacaciones madura. Recibe M100.", "action": "receive", "amount": 100 },
+        { "text": "Devolución del Impuesto sobre la Renta. Recibe M200.", "action": "receive", "amount": 200 },
+        { "text": "Es tu cumpleaños. Recibe M10 de cada jugador.", "action": "receive_each", "amount": 10 },
+        { "text": "Seguro de vida madura. Recibe M100.", "action": "receive", "amount": 100 },
+        { "text": "Paga gastos de hospital de M100.", "action": "pay", "amount": 100 },
+        { "text": "Paga gastos escolares de M150.", "action": "pay", "amount": 150 },
+        { "text": "Recibe M25 por servicios de consultoría.", "action": "receive", "amount": 25 },
+        { "text": "Has ganado el segundo premio en un certamen de belleza. Recibe M10.", "action": "receive", "amount": 10 },
+        { "text": "Heredas M100.", "action": "receive", "amount": 100 }
+    ]
+}
