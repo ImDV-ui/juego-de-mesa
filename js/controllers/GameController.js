@@ -119,6 +119,17 @@ export default class GameController {
     async handleStartGame() {
         const configItems = document.querySelectorAll('.player-config-item');
         const playersConfig = [];
+        
+        // Reset player array to avoid duplicates and out-of-bounds crashes
+        this.gameState.players = [];
+        // Clear previous tokens too if necessary
+        this.tokenController.tokens = [];
+        this.boardController.spaceMeshes.forEach(m => {
+             // We don't remove space meshes, only player tokens from scene
+        });
+        this.tokenController.scene.children = this.tokenController.scene.children.filter(c => !c.userData.isToken);
+        // Wait, better to just let TokenController handle its own cleanup if I have that.
+        // For now, let's just clear the array and ensure the loop is safe.
 
         for (let i = 0; i < configItems.length; i++) {
             const name = configItems[i].querySelector('.p-name-input').value.trim();

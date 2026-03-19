@@ -63,7 +63,7 @@ export default class TokenController {
             const center = box.getCenter(new THREE.Vector3());
             const size = box.getSize(new THREE.Vector3());
             const maxDim = Math.max(size.x, size.y, size.z);
-            const scale = 2.0 / maxDim; 
+            const scale = 6.0 / maxDim; // Increased further to 6.0 for maximum visibility
             modelObj.scale.set(scale, scale, scale);
             modelObj.position.sub(center.multiplyScalar(scale)); // Center it
             
@@ -106,8 +106,8 @@ export default class TokenController {
     getOffset(gridIndex, posIndex) {
         // Determinamos el desplazamiento basado en el índice del jugador (0-3)
         // Usamos una cuadrícula de 2x2
-        const offsetX = (gridIndex % 2 === 0 ? -1.1 : 1.1);
-        const offsetZ = (gridIndex < 2 ? -1.1 : 1.1);
+        const offsetX = (gridIndex % 2 === 0 ? -3.5 : 3.5);
+        const offsetZ = (gridIndex < 2 ? -3.5 : 3.5);
         
         const side = Math.floor(posIndex / 10);
         
