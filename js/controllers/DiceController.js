@@ -71,7 +71,7 @@ export default class DiceController {
                 
                 for(let i = 0; i < this.diceCount; i++) {
                     const clone = originalMesh.clone();
-                    clone.scale.set(14, 14, 14); 
+                    clone.scale.set(42, 42, 42); 
                     clone.traverse(c => { if(c.isMesh) { c.castShadow = true; c.receiveShadow = true; }});
                     
                     this.scene.add(clone);
@@ -89,7 +89,7 @@ export default class DiceController {
                     
                     body.type = CANNON.Body.STATIC; 
                     body.addShape(shape);
-                    body.position.set(2 * i, -100, 0); 
+                    body.position.set(5 * i, -100, 0); 
                     
                     this.world.addBody(body);
                     this.diceBodies.push(body);
@@ -112,7 +112,7 @@ export default class DiceController {
             body.updateMassProperties(); 
             body.wakeUp();
 
-            body.position.set(-2 + (index * 4), 15, 6);
+            body.position.set(-5 + (index * 10), 25, 6);
 
             body.quaternion.setFromEuler(
                 Math.random() * Math.PI * 2,

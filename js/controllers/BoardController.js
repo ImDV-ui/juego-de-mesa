@@ -218,8 +218,6 @@ export default class BoardController {
         return texture;
     }
 
-
-
     generateBoard() {
         const scale = 2.45; 
         const spaceW = 4.6 * scale;
@@ -257,7 +255,6 @@ export default class BoardController {
         
         const centerSize = rowOffset * 2 - spaceH;
 
-        // Plano verde de fondo (color del tablero)
         const innerGeo = new THREE.PlaneGeometry(centerSize, centerSize);
         const innerMat = new THREE.MeshStandardMaterial({ color: '#b8e2c8', roughness: 1.0, metalness: 0 });
         const innerMesh = new THREE.Mesh(innerGeo, innerMat);
@@ -279,7 +276,7 @@ export default class BoardController {
         logoGroup.position.y = -0.47;
         logoGroup.rotation.y = Math.PI / 4; 
         const logoWidth = centerSize * 0.8;
-        const logoHeight = logoWidth / 2.2;
+        const logoHeight = logoWidth / 1.5;
         const logoGeo = new THREE.PlaneGeometry(logoWidth, logoHeight);
         const logoMesh = new THREE.Mesh(logoGeo, logoMat);
         logoMesh.rotation.x = -Math.PI / 2;
@@ -307,7 +304,7 @@ export default class BoardController {
         
         const luckMaterials = [sideMat, sideMat, new THREE.MeshStandardMaterial({ map: luckTexture, roughness: 0.5, transparent: true }), bottomMat, sideMat, sideMat];
         const luckDeck = new THREE.Mesh(deckGeo, luckMaterials);
-        // Suerte en la parte inferior derecha del centro, horizontal (sin rotación)
+
         luckDeck.position.set(10 * scale, 0.4, 10 * scale); 
         luckDeck.rotation.y = Math.PI / 4;
         luckDeck.castShadow = true; 

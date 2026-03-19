@@ -53,7 +53,6 @@ export default class BankController {
     processPayment(player, amount) {
         let remainingToPay = amount;
 
-        // Try exact/greedy exact matching first (using smallest necessary bills)
         for (let i = this.denominations.length - 1; i >= 0; i--) {
             const denom = this.denominations[i];
             
@@ -87,14 +86,14 @@ export default class BankController {
 
         let rentLevel = 0; 
         
-        // Determinar el nivel de alquiler basado en casas o monopolio
+
         if (property.type === 'street') {
             if (property.houses > 0) {
-                rentLevel = property.houses; // 1 house = rent[1], 2 = rent[2]... 5 (hotel) = rent[5]
+                rentLevel = property.houses;
             }
         } else if (property.type === 'station') {
             const ownedStations = ownerProperties.filter(p => p.type === 'station').length;
-            rentLevel = Math.min(ownedStations - 1, 3); // 1 = rent[0], 2 = rent[1], etc.
+            rentLevel = Math.min(ownedStations - 1, 3);
         }
 
         let rent = property.rent[rentLevel];
@@ -121,3 +120,4 @@ export default class BankController {
         return false;
     }
 }
+

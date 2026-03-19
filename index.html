@@ -23,7 +23,6 @@
 
 <body>
 
-    <!-- Menú de Configuración Inicial -->
     <div id="setup-overlay" class="setup-overlay">
         <div class="setup-card">
             <div class="setup-header">
@@ -42,7 +41,6 @@
                 </div>
 
                 <div id="player-configs" class="player-configs">
-                    <!-- Generado dinámicamente -->
                 </div>
             </div>
 
@@ -53,7 +51,7 @@
     </div>
 
 
-    <div class="dice-controls">
+    <div id="dice-controls" class="dice-controls hidden">
         <div id="turn-banner" class="turn-banner">Turno de: <span id="current-player-name">Jugador 1</span></div>
         <button class="btn-roll-3d" id="roll-button">🎲 TIRAR DADOS</button>
     </div>
@@ -69,7 +67,7 @@
     <div id="game-container" style="position: absolute; top:0; left:0; width:100vw; height:100vh; overflow:hidden;">
     </div>
 
-    <div id="player-wallet" class="player-wallet">
+    <div id="player-wallet" class="player-wallet hidden">
 
         <button id="toggle-wallet-btn" class="btn-wallet-toggle" title="Ocultar/Mostrar Billetera">⬅ Ocultar</button>
 
@@ -81,7 +79,6 @@
                 </div>
             </div>
 
-            <!-- BILLETES -->
             <div class="wallet-bills">
                 <div class="bill-item">
                     <img src="./assets/dinero/billete 7.jpg" alt="$500" class="bill-img" data-denomination="500">
@@ -133,7 +130,6 @@
                     <div class="property-card-price-label">Precio</div>
                     <div class="property-card-price" id="property-card-price">M0</div>
                     <div class="property-card-rent-table" id="property-card-rent-table">
-                        <!-- Filas generadas por JS -->
                     </div>
                 </div>
             </div>
@@ -162,7 +158,6 @@
         </div>
     </div>
 
-    <!-- Modal de Cartas (Suerte/Comunidad) -->
     <div id="card-modal" class="card-modal hidden">
         <div class="card-content">
             <div id="card-type-header" class="card-type-luck">
@@ -179,8 +174,7 @@
     </div>
 
 
-    <!-- PANEL DE PROPIEDADES (top-right) -->
-    <div id="inventory-panel" class="inv-panel">
+    <div id="inventory-panel" class="inv-panel hidden">
         <button id="inv-toggle-btn" class="inv-toggle-btn">🏘️ Propiedades <span id="inv-count"
                 class="inv-count">0</span> <span class="inv-arrow">▼</span></button>
         <div id="inv-panel-body" class="inv-panel-body">
@@ -190,7 +184,6 @@
         </div>
     </div>
 
-    <!-- MODAL DETALLE DE CARTA (centrado) -->
     <div id="prop-detail-modal" class="prop-detail-modal hidden">
         <div class="prop-detail-backdrop" id="prop-detail-backdrop"></div>
         <div class="prop-detail-card" id="prop-detail-card">
@@ -200,7 +193,6 @@
             <div class="prop-detail-body">
                 <div class="prop-detail-icon" id="prop-detail-icon">🏠</div>
                 <table class="prop-detail-table" id="prop-detail-table">
-                    <!-- Generado por JS -->
                 </table>
             </div>
             <button class="prop-detail-close" id="prop-detail-close">✖ Cerrar</button>

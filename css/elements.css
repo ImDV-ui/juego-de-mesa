@@ -1,19 +1,19 @@
-/* --- ESTILOS BASE DE CASILLAS --- */
+
 .space {
-    border: 3px solid #222; /* Borde grueso estilo cómic */
+    border: 3px solid #222; 
     box-sizing: border-box;
     display: flex;
-    background: #fff8e1; /* Fondo pergamino claro en lugar de gris verdoso */
+    background: #fff8e1; 
     overflow: hidden;
     color: #222;
-    box-shadow: inset 0 0 8px rgba(0,0,0,0.05); /* Ligerísima profundidad */
+    box-shadow: inset 0 0 8px rgba(0,0,0,0.05); 
 }
 
 .color-bar {
-    border: 3px solid #222; /* Borde interior negro grueso */
+    border: 3px solid #222; 
     box-sizing: border-box;
     flex-shrink: 0; 
-    box-shadow: inset 0 -4px 0 rgba(0,0,0,0.2); /* Sombra interior para dar efecto volumen/grosor */
+    box-shadow: inset 0 -4px 0 rgba(0,0,0,0.2); 
 }
 
 .space-content {
@@ -31,7 +31,7 @@
     font-weight: 900;
 }
 
-/* Títulos y Precios */
+
 .name { 
     flex-grow: 1; 
     display: flex; 
@@ -41,29 +41,29 @@
     font-weight: 900;
     line-height: 1.1;
     color: #222;
-    text-shadow: 1px 1px 0px rgba(255,255,255,0.8); /* Resalta el texto */
+    text-shadow: 1px 1px 0px rgba(255,255,255,0.8); 
 }
 .price { 
     font-size: 0.7rem; 
     padding-top: 3px; 
     width: 100%; 
-    border-top: 3px solid #222; /* Separador de precio grueso */
+    border-top: 3px solid #222; 
     font-weight: 900;
     color: #111;
     background-color: rgba(0,0,0,0.03);
 }
 
-/* --- ORIENTACIONES DE LAS CASILLAS --- */
 
-/* Fila de ABAJO (Normal) */
+
+
 .property.bottom { flex-direction: column; }
 .property.bottom .color-bar { width: 100%; height: 25%; }
 
-/* Fila de ARRIBA (Color arriba, texto debajo) */
+
 .property.top { flex-direction: column; }
 .property.top .color-bar { width: 100%; height: 25%; }
 
-/* Columna IZQUIERDA (Barra a la derecha, texto lee de abajo-arriba) */
+
 .property.left { 
     flex-direction: row-reverse; 
 }
@@ -77,7 +77,7 @@
     font-size: 0.65rem; 
 }
 
-/* Columna DERECHA (Barra a la izquierda, letras apuntando hacia el centro del tablero) */
+
 .property.right { 
     flex-direction: row; 
 }
@@ -91,7 +91,7 @@
 }
 
 
-/* --- ESQUINAS --- */
+
 .corner-content {
     width: 100%;
     height: 100%;
@@ -105,11 +105,11 @@
     color: #222;
     text-shadow: 1px 1px 0px #fff;
 }
-/* Rotación de esquinas para que miren al centro */
+
 .corner.jail .corner-content { transform: rotate(45deg); }
 .corner.go-to-jail .corner-content { transform: rotate(135deg); }
 .corner.parking .corner-content { transform: rotate(135deg); }
-/* Salida Ultra Vibrante */
+
 .corner.go .corner-content { 
     transform: rotate(-45deg); 
     color: #ffeb3b; 
@@ -118,7 +118,7 @@
 }
 .SALIDA { font-size: 1.8rem !important; color: #ffeb3b; }
 
-/* --- DISEÑO DEL CENTRO (LOGO Y UI) --- */
+
 .board-logo {
     position: absolute;
     top: 50%;
@@ -126,11 +126,11 @@
     transform: translate(-50%, -50%) rotate(-15deg);
     font-size: 5rem;
     font-weight: 900;
-    color: #ffeb3b; /* Amarillo vibrante */
+    color: #ffeb3b; 
     margin: 0;
     text-align: center;
     opacity: 0.9;
-    /* Borde duro estilo título de videojuego/cómic */
+    
     text-shadow: 
         4px 4px 0 #e74c3c, 
         -2px -2px 0 #e74c3c, 
@@ -142,7 +142,7 @@
     line-height: 1;
 }
 
-/* --- BOTÓN DE TIRAR DADOS (FUERA DEL TABLERO) --- */
+
 .dice-controls {
     position: fixed;
     bottom: 30px;
@@ -151,15 +151,15 @@
 }
 
 .btn-roll-3d {
-    background: #ff4757; /* Rojo intenso vivo */
+    background: #ff4757; 
     color: white;
-    border: 4px solid #222; /* Borde oscuro */
+    border: 4px solid #222; 
     padding: 15px 35px;
     font-size: 1.6rem;
     font-weight: 900;
     border-radius: 50px;
     cursor: pointer;
-    /* Efecto de botón 3D tipo arcade/físico */
+    
     box-shadow: 0 8px 0 #222, 0 15px 20px rgba(0,0,0,0.3);
     transition: all 0.1s ease;
     text-transform: uppercase;
@@ -180,14 +180,14 @@
     box-shadow: 0 0 0 #222, 0 2px 5px rgba(0,0,0,0.3);
 }
 
-/* --- POPUP RESULTADO DEL DADO --- */
+
 .dice-popup-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(44, 62, 80, 0.85); /* Overlay más opaco y azulado */
+    background: rgba(44, 62, 80, 0.85); 
     display: flex;
     justify-content: center;
     align-items: center;
@@ -207,8 +207,8 @@
     padding: 40px 70px;
     border-radius: 30px;
     text-align: center;
-    box-shadow: 15px 15px 0 rgba(0,0,0,0.3); /* Sombra cómic desfasada */
-    transform: scale(0.8) rotate(-5deg); /* Ligera rotación juguetona al inicio */
+    box-shadow: 15px 15px 0 rgba(0,0,0,0.3); 
+    transform: scale(0.8) rotate(-5deg); 
     transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     border: 6px solid #222;
 }
@@ -223,21 +223,21 @@
     font-size: 2rem;
     font-weight: 900;
     text-transform: uppercase;
-    text-shadow: 2px 2px 0 #ffeb3b; /* Destello detrás del texto */
+    text-shadow: 2px 2px 0 #ffeb3b; 
 }
 
 .dice-popup-result {
     font-size: 6rem;
     font-weight: 900;
-    color: #2ed573; /* Verde vibrante */
+    color: #2ed573; 
     margin: 20px 0;
-    /* Borde negro mediante shadow + text-stroke */
+    
     text-shadow: 4px 4px 0 #222; 
     -webkit-text-stroke: 2px #222;
 }
 
 .btn-popup-close {
-    background: #1e90ff; /* Azul vivo */
+    background: #1e90ff; 
     color: white;
     border: 4px solid #222;
     padding: 12px 30px;
@@ -245,7 +245,7 @@
     font-weight: 900;
     border-radius: 15px;
     cursor: pointer;
-    box-shadow: 0 6px 0 #222; /* Botón 3D físico */
+    box-shadow: 0 6px 0 #222; 
     transition: all 0.1s;
     text-transform: uppercase;
 }
@@ -261,7 +261,7 @@
     box-shadow: 0 0 0 #222;
 }
 
-/* --- COLORES ULTRA-VIBRANTES DE LAS PROPIEDADES --- */
+
 .bg-brown { background-color: #d35400; }
 .bg-lightblue { background-color: #00d2d3; }
 .bg-pink { background-color: #ff9ff3; }
@@ -271,7 +271,7 @@
 .bg-green { background-color: #1dd1a1; }
 .bg-darkblue { background-color: #5f27cd; }
 
-/* --- HUD DINERO / WALLET --- */
+
 .player-wallet {
     position: absolute;
     top: 0;
@@ -285,14 +285,14 @@
     z-index: 20000;
     box-shadow: 10px 0 20px rgba(0,0,0,0.3);
     backdrop-filter: blur(5px);
-    pointer-events: none; /* Permitimos clics al tablero donde no haya billetera */
+    pointer-events: none; 
     transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
 }
 
-/* Nueva área interna para permitir hacer scroll de los billetes sin cortar el botón */
+
 .wallet-scroll-area {
     width: 100%;
     height: 100%;
@@ -300,7 +300,7 @@
     overflow-y: auto;
     overflow-x: hidden;
     box-sizing: border-box;
-    pointer-events: auto; /* Reactivamos los eventos de ratón aquí */
+    pointer-events: auto; 
 }
 
 .wallet-scroll-area::-webkit-scrollbar {
@@ -308,18 +308,18 @@
 }
 
 .player-wallet.collapsed {
-    transform: translateX(-100%); /* Ahora se oculta completamente al ras */
+    transform: translateX(-100%); 
 }
 
 .btn-wallet-toggle {
     position: absolute;
     top: 20px;
-    right: -105px; /* Lo empujamos 105px hacia afuera, pegado al borde derecho */
+    right: -105px; 
     width: 105px;
     background: #ff4757;
     color: white;
     border: 3px solid #222;
-    border-left: none; /* Se fusiona con el borde de la billetera */
+    border-left: none; 
     padding: 10px 15px;
     font-size: 0.9rem;
     font-weight: 900;
@@ -332,7 +332,7 @@
 }
 
 .btn-wallet-toggle:hover {
-    transform: translateX(3px); /* Pequeño salto a la derecha al hacer hover */
+    transform: translateX(3px); 
     background: #ff6b81;
 }
 
@@ -374,7 +374,7 @@
     padding-top: 15px;
     padding-bottom: 25px;
     flex-grow: 1; 
-    gap: 15px; /* SEPARACIÓN LIMPIA ENTRE BILLETES */
+    gap: 15px; 
 }
 
 .bill-item {
@@ -382,13 +382,13 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    /* margin-top: -55px;  <-- ELIMINADO PARA QUE NO SE AMONTONEN */
+    
     transition: transform 0.2s, z-index 0.2s;
     pointer-events: auto;
 }
 
 .bill-item:hover {
-    transform: scale(1.15); /* Al no estar amontonados, solo los agrandamos un poco */
+    transform: scale(1.15); 
     z-index: 100;
 }
 
@@ -421,7 +421,7 @@
     z-index: 5;
 }
 
-/* --- PAYMENT MODAL --- */
+
 .payment-modal {
     position: fixed;
     top: 0; 
@@ -465,7 +465,7 @@
     -webkit-text-stroke: 1.5px #222; 
 }
 
-/* --- PROPERTY CARD IN MODAL --- */
+
 .property-card-ui {
     width: 180px;
     height: 300px;
@@ -574,9 +574,9 @@
     transform: scale(1.05);
 }
 
-/* --- PAYMENT MINIMIZE STATE --- */
+
 .btn-popup-action {
-    background: #1e90ff; /* Azul vivo */
+    background: #1e90ff; 
     color: white;
     border: 4px solid #222;
     padding: 10px 20px;
@@ -587,8 +587,8 @@
     box-shadow: 0 4px 0 #222;
     transition: background 0.1s, transform 0.1s, box-shadow 0.1s;
     text-transform: uppercase;
-    z-index: 10001; /* Above modal content */
-    user-select: none; /* Prevent text selection while holding */
+    z-index: 10001; 
+    user-select: none; 
     -webkit-user-select: none;
 }
 
@@ -605,7 +605,7 @@
 }
 
 .payment-modal.minimized {
-    background: rgba(0,0,0,0); /* Removes the dark overlay */
+    background: rgba(0,0,0,0); 
     backdrop-filter: none;
 }
 
@@ -616,7 +616,7 @@
     transition: opacity 0.2s, transform 0.2s;
 }
 
-/* --- PROPERTY CARD RENT TABLE --- */
+
 .property-card-price-label {
     font-size: 0.65rem;
     font-weight: 700;
@@ -665,7 +665,7 @@
     background: rgba(231, 76, 60, 0.08);
 }
 
-/* --- CANCEL BUY BUTTON --- */
+
 .btn-cancel-buy {
     display: block;
     margin: 14px auto 0;
@@ -761,9 +761,7 @@
 }
 
 
-/* ============================================
-   INVENTORY PANEL — top-right floating
-   ============================================ */
+
 .inv-panel {
     position: fixed;
     top: 20px;
@@ -773,7 +771,7 @@
     font-family: 'Outfit', sans-serif;
 }
 
-/* Toggle button */
+
 .inv-toggle-btn {
     width: 100%;
     background: rgba(30, 39, 46, 0.92);
@@ -816,7 +814,7 @@
 
 .inv-panel.open .inv-arrow { transform: rotate(180deg); }
 
-/* Sliding body */
+
 .inv-panel-body {
     max-height: 0;
     overflow: hidden;
@@ -831,7 +829,7 @@
 
 .inv-panel.open .inv-panel-body { max-height: 60vh; }
 
-/* Cards list inside panel */
+
 .inventory-cards {
     display: flex;
     flex-direction: column;
@@ -853,7 +851,7 @@
     font-style: italic;
 }
 
-/* Mini row card (clickable → opens detail modal) */
+
 .inv-card-row {
     display: flex;
     align-items: center;
@@ -898,9 +896,7 @@
     flex-shrink: 0;
 }
 
-/* ============================================
-   PROPERTY DETAIL MODAL — centered overlay
-   ============================================ */
+
 .prop-detail-modal {
     position: fixed;
     inset: 0;
@@ -924,7 +920,7 @@
     cursor: pointer;
 }
 
-/* The card itself */
+
 .prop-detail-card {
     position: relative;
     width: 220px;
@@ -941,7 +937,7 @@
     to   { transform: scale(1) rotate(0deg);   opacity: 1; }
 }
 
-/* Color band at top */
+
 .prop-detail-color {
     min-height: 64px;
     display: flex;
@@ -973,7 +969,7 @@
     padding: 12px 0 6px;
 }
 
-/* Table inside detail card */
+
 .prop-detail-table {
     width: 100%;
     border-collapse: collapse;
@@ -1019,7 +1015,7 @@
     font-size: 0.6rem;
 }
 
-/* Close button */
+
 .prop-detail-close {
     display: block;
     width: calc(100% - 20px);
@@ -1044,16 +1040,14 @@
     box-shadow: 0 2px 0 #222;
 }
 
-/* ============================================
-   SETUP OVERLAY — Initial Menu
-   ============================================ */
+
 .setup-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    /* Fondo con imagen y overlay más ligero para mejor contraste */
+    
     background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), 
                 url('../assets/fondo_tablero.png');
     background-size: cover;
@@ -1069,7 +1063,7 @@
 
 .setup-card {
     background: #fff;
-    width: 92%; /* Slightly wider to compensate for reduced height */
+    width: 92%; 
     max-width: 480px;
     border-radius: 16px;
     border: 6px solid #000;
@@ -1244,7 +1238,7 @@
     display: none;
 }
 
-/* --- DICE & TURN UI --- */
+
 .dice-controls {
     position: fixed;
     bottom: 30px;
@@ -1272,9 +1266,7 @@
     backdrop-filter: blur(5px);
 }
 
-/* ============================================
-   CARD MODAL (Suerte / Comunidad)
-   ============================================ */
+
 .card-modal {
     position: fixed;
     top: 0;
@@ -1300,7 +1292,7 @@
 }
 
 .card-type-luck {
-    background: #ff7f50; /* Coral for Luck */
+    background: #ff7f50; 
     color: #fff;
     padding: 15px;
     text-align: center;
@@ -1308,7 +1300,7 @@
 }
 
 .card-type-community {
-    background: #4facfe; /* Sky Blue for Community */
+    background: #4facfe; 
     color: #fff;
     padding: 15px;
     text-align: center;
@@ -1374,7 +1366,7 @@
     100% { transform: scale(1); }
 }
 
-/* --- SETUP OVERLAY REFINEMENTS --- */
+
 .setup-row {
     margin-top: 15px;
     display: flex;
@@ -1394,11 +1386,11 @@
     display: flex;
     gap: 8px;
     width: 100%;
-    flex-wrap: wrap; /* Allow wrapping for many pieces */
+    flex-wrap: wrap; 
 }
 
 .piece-option {
-    flex: 1 1 calc(33% - 8px); /* Take up roughly a third of the width */
+    flex: 1 1 calc(33% - 8px); 
     min-width: 80px;
     cursor: pointer;
 }
@@ -1425,3 +1417,4 @@
     box-shadow: 0 4px 0 #222;
     transform: translateY(-2px);
 }
+

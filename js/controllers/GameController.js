@@ -176,6 +176,10 @@ export default class GameController {
         this.updateTurnUI();
 
         document.getElementById('setup-overlay').classList.add('hidden');
+        document.getElementById('player-wallet').classList.remove('hidden');
+        document.getElementById('inventory-panel').classList.remove('hidden');
+        const diceControls = document.getElementById('dice-controls');
+        if (diceControls) diceControls.classList.remove('hidden');
     }
 
     setupWalletToggle() {
@@ -287,7 +291,6 @@ export default class GameController {
         tableEl.innerHTML = `<tbody>${rows}</tbody>`;
         modal.classList.remove('hidden');
     }
-
 
     updatePlayerWalletUI(player) {
         document.getElementById('wallet-player-name').innerText = player.name;
@@ -562,8 +565,20 @@ export default class GameController {
             } else if (spaceData.type === 'go-to-jail') {
                 player.position = 10;
                 player.jailed = true;
-                this.tokenController.updateToken3DPosition(this.tokenController.tokens.find(t => t.id === player.id));
-                this.showNextTurnOption();
+                this.updatePlayerWalletUI(player);
+                this.showNextTurnOption("¡A LA CÁRCEL!", "Has sido enviado directamente a la cárcel.");
+                return;
+            } else if (spaceData.type === 'jail') {
+                this.updatePlayerWalletUI(player);
+                this.showNextTurnOption("CÁRCEL (Solo Visitas)", "Estás de visita en la cárcel. No te preocupes, puedes seguir tranquilamente.");
+                return;
+            } else if (spaceData.type === 'go') {
+                this.updatePlayerWalletUI(player);
+                this.showNextTurnOption("SALIDA", "Has caído en la casilla de Salida. Has cobrado tus recompensas.");
+                return;
+            } else if (spaceData.type === 'parking') {
+                this.updatePlayerWalletUI(player);
+                this.showNextTurnOption("PARKING GRATUITO", "¡Descansa un poco! Es un lugar seguro.");
                 return;
             }
         }
@@ -574,7 +589,9 @@ export default class GameController {
         }
     }
 
-    showNextTurnOption() {
+    showNextTurnOption(title = "Fin de Movimiento", message = "Has terminado de moverte. ¿Quieres hacer algo más?") {
+        this.currentPayment.type = 'manage';
+        
         const skipBtn = document.getElementById('btn-skip-manage');
         const modal = document.getElementById('payment-modal');
         const titleEl = document.getElementById('payment-title');
@@ -583,8 +600,8 @@ export default class GameController {
         const dropzone = document.getElementById('payment-dropzone');
         const houseActions = document.getElementById('house-actions');
 
-        titleEl.innerText = "Fin de Movimiento";
-        reasonEl.innerText = "Has terminado de moverte. ¿Quieres hacer algo más?";
+        titleEl.innerText = title;
+        reasonEl.innerText = message;
         
         if (cardUi) cardUi.classList.add('hidden');
         if (dropzone) dropzone.classList.add('hidden');
@@ -708,7 +725,9 @@ export default class GameController {
                 player.position = 10;
                 player.jailed = true;
                 this.tokenController.updateToken3DPosition(this.tokenController.tokens.find(t => t.id === player.id));
-                break;
+                this.updatePlayerWalletUI(player);
+                this.showNextTurnOption("¡A LA CÁRCEL!", "Esta carta te ha enviado directamente a la cárcel sin pasar por la salida.");
+                return;
             case 'receive_each':
                 this.gameState.players.forEach(p => {
                     if (p.id !== player.id) {

@@ -1,5 +1,4 @@
 body {
-    /* Fondo vibrante estilo cartoon / césped o tierra clara */
     background-color: #f7e09e;
     background-image:
         radial-gradient(#e1cc8b 10%, transparent 10.5%),
@@ -10,15 +9,12 @@ body {
     padding: 0;
     font-family: 'Outfit', 'Arial Rounded MT Bold', sans-serif;
     overflow: hidden;
-    /* Oculta los scrollbars para el canvas fijo */
     user-select: none;
-    /* Prevenir selección de texto accidental */
 }
 
 input,
 textarea {
     user-select: text;
-    /* Permitir selección en inputs */
 }
 
 .hidden {
