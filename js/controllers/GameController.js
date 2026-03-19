@@ -428,6 +428,9 @@ export default class GameController {
         if (houseActions) houseActions.classList.add('hidden');
         if (skipBtn) skipBtn.classList.add('hidden');
         
+        const amountsDiv = document.querySelector('.payment-amounts');
+        if (amountsDiv) amountsDiv.classList.remove('hidden');
+        
         if (type === 'tax') {
             titleEl.innerText = "Pago de Impuestos";
             reasonEl.innerText = `Debes pagar al banco por ${spaceData.name}`;
@@ -565,6 +568,7 @@ export default class GameController {
             } else if (spaceData.type === 'go-to-jail') {
                 player.position = 10;
                 player.jailed = true;
+                this.tokenController.updateToken3DPosition(this.tokenController.tokens.find(t => t.id === player.id));
                 this.updatePlayerWalletUI(player);
                 this.showNextTurnOption("¡A LA CÁRCEL!", "Has sido enviado directamente a la cárcel.");
                 return;
@@ -607,6 +611,12 @@ export default class GameController {
         if (dropzone) dropzone.classList.add('hidden');
         if (skipBtn) skipBtn.classList.remove('hidden');
         if (houseActions) houseActions.classList.add('hidden');
+        
+        const cancelBtn = document.getElementById('btn-cancel-buy');
+        if (cancelBtn) cancelBtn.classList.add('hidden');
+        
+        const amountsDiv = document.querySelector('.payment-amounts');
+        if (amountsDiv) amountsDiv.classList.add('hidden');
 
         modal.classList.remove('hidden');
     }
@@ -618,6 +628,12 @@ export default class GameController {
         this.updatePlayerWalletUI(nextPlayer);
         this.updatePlayerInventoryUI(nextPlayer);
         this.updateTurnUI();
+
+        if (nextPlayer.jailed) {
+            nextPlayer.jailed = false;
+            this.showNextTurnOption("TURNO PERDIDO", "Estás en la cárcel y pierdes este turno.");
+            return;
+        }
 
         const rollBtn = document.getElementById('roll-button');
         if (rollBtn) rollBtn.disabled = false;

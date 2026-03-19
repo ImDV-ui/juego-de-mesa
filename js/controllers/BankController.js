@@ -71,7 +71,6 @@ export default class BankController {
                 const changeToReturn = denom - remainingToPay;
                 
                 this.receiveFromBank(player, changeToReturn);
-                foundBillToBreak = true;
                 break;
             }
         }
