@@ -7,16 +7,17 @@ export default class TokenController {
     constructor() {
         this.tokens = [];
         this.scene = null;
+        this.boardGroup = null;
         this.spaceCoordinates = [];
     }
 
-    setupGlobalContext(scene, spaceCoordinates) {
+    setupGlobalContext(scene, spaceCoordinates, boardGroup) {
         this.scene = scene;
+        this.boardGroup = boardGroup || scene; 
         this.spaceCoordinates = spaceCoordinates;
     }
 
     init() {
-        console.log('TokenController initializing (Global Context)...');
     }
 
     async createPlayerToken(playerId, modelPath) {
@@ -25,7 +26,6 @@ export default class TokenController {
         const isOBJ = modelPath.toLowerCase().endsWith('.obj');
 
         if (isOBJ) {
-            // Load OBJ/MTL
             const mtlPath = modelPath.replace('.obj', '.mtl');
             const mtlLoader = new MTLLoader();
             
@@ -41,7 +41,6 @@ export default class TokenController {
                 objLoader.load(modelPath, resolve, undefined, reject);
             });
         } else {
-            // Load GLTF
             const loader = new GLTFLoader();
             await new Promise((resolve, reject) => {
                 loader.load(
@@ -56,24 +55,20 @@ export default class TokenController {
             });
         }
 
-        // Common processing for both formats
         if (modelObj) {
-            // Center and scale model
             const box = new THREE.Box3().setFromObject(modelObj);
             const center = box.getCenter(new THREE.Vector3());
             const size = box.getSize(new THREE.Vector3());
             const maxDim = Math.max(size.x, size.y, size.z);
-            const scale = 6.0 / maxDim; // Increased further to 6.0 for maximum visibility
+            const scale = 6.0 / maxDim; 
             modelObj.scale.set(scale, scale, scale);
-            modelObj.position.sub(center.multiplyScalar(scale)); // Center it
+            modelObj.position.sub(center.multiplyScalar(scale)); 
             
-            // Recorrer el modelo para habilitar sombras y aplicar material CROMADO
             modelObj.traverse(c => {
                 if (c.isMesh) {
                     c.castShadow = true;
                     c.receiveShadow = true;
                     
-                    // Material cromado perfecto
                     c.material = new THREE.MeshStandardMaterial({
                         color: 0xffffff,
                         metalness: 1.0,
@@ -84,38 +79,31 @@ export default class TokenController {
                 }
             });
 
-            this.scene.add(modelObj);
+            this.boardGroup.add(modelObj);
         }
 
         const token = {
             id: playerId,
-            gridIndex: this.tokens.length, // 0, 1, 2, 3
+            gridIndex: this.tokens.length, 
             model: modelObj,
             currentPosition: 0,
             targetPosition: 0
         };
 
         this.tokens.push(token);
-
-        // Place on Start
         this.updateToken3DPosition(token);
-        
         return token;
     }
 
     getOffset(gridIndex, posIndex) {
-        // Determinamos el desplazamiento basado en el índice del jugador (0-3)
-        // Usamos una cuadrícula de 2x2
         const offsetX = (gridIndex % 2 === 0 ? -3.5 : 3.5);
         const offsetZ = (gridIndex < 2 ? -3.5 : 3.5);
         
         const side = Math.floor(posIndex / 10);
         
-        // Rotamos el offset según el lado del tablero para que siempre queden "paralelos"
         if (side === 0 || side === 2) {
             return { x: offsetX, z: offsetZ };
         } else {
-            // En los laterales (11-19 y 31-39), intercambiamos ejes
             return { x: offsetZ, z: offsetX };
         }
     }
@@ -128,14 +116,12 @@ export default class TokenController {
 
         const offset = this.getOffset(token.gridIndex, token.currentPosition);
         
-        // Position model with offset
         token.model.position.set(
             baseCoord.x + offset.x, 
             baseCoord.y, 
             baseCoord.z + offset.z
         );
 
-        // Update 3D Model Rotation based on board side
         if (token.currentPosition >= 0 && token.currentPosition < 10) {
             token.model.rotation.y = Math.PI / 2 + Math.PI; 
         }

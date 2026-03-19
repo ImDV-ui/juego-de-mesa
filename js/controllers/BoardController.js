@@ -27,7 +27,6 @@ export default class BoardController {
 
         this.scene = new THREE.Scene();
         
-        // Cargar el fondo 2D (Fondo Puerto Algeciras)
         new THREE.TextureLoader().load('assets/fondo_juego.png', (texture) => {
             this.scene.background = texture;
             texture.colorSpace = THREE.SRGBColorSpace;
@@ -56,7 +55,6 @@ export default class BoardController {
         this.controls.minDistance = 20;
         this.controls.maxDistance = 600;
 
-        // Físicas
         this.world = new CANNON.World({ gravity: new CANNON.Vec3(0, -90, 0) });
         this.floorPhysicsMaterial = new CANNON.Material();
         const floorShape = new CANNON.Plane();
@@ -82,7 +80,6 @@ export default class BoardController {
             this.world.addBody(wallBody);
         });
 
-        // Luz ambiental reducida para evitar deslumbramiento
         const ambientLight = new THREE.AmbientLight(0xffffff, 0.7); 
         this.scene.add(ambientLight);
         
@@ -93,7 +90,6 @@ export default class BoardController {
 
         this.generateBoard();
         
-        // Ajuste final de la posición del grupo para centrar el tablero en la plaza del fondo
         this.boardGroup.position.set(5.5, 0, 6.5); 
         this.scene.add(this.boardGroup);
 
@@ -103,45 +99,45 @@ export default class BoardController {
 
     getAlgecirasData() {
         return [
-            { name: "SALIDA", type: 'corner' }, // 0
+            { name: "SALIDA", type: 'corner' }, 
             { name: "La Piñera", price: "M60", color: "#6C3717" }, 
-            { name: "Caja Comunidad" }, // 2
+            { name: "Caja Comunidad" }, 
             { name: "El Cerro", price: "M60", color: "#6C3717" }, 
-            { name: "Impuesto Renta", price: "Paga M200" }, // 4
-            { name: "Estación Renfe", price: "M200" }, // 5
+            { name: "Impuesto Renta", price: "Paga M200" }, 
+            { name: "Estación Renfe", price: "M200" }, 
             { name: "C. Convento", price: "M100", color: "#8AD0EF" }, 
-            { name: "? Suerte" }, // 7
+            { name: "? Suerte" }, 
             { name: "Regino Mtz.", price: "M100", color: "#8AD0EF" }, 
             { name: "Plaza Alta", price: "M120", color: "#8AD0EF" }, 
-            { name: "CÁRCEL", type: 'corner' }, // 10
+            { name: "CÁRCEL", type: 'corner' }, 
             { name: "Las Acacias", price: "M140", color: "#D63384" }, 
-            { name: "Endesa", price: "M150" }, // 12
+            { name: "Endesa", price: "M150" }, 
             { name: "Paseo de C.", price: "M140", color: "#D63384" }, 
             { name: "V. del Carmen", price: "M160", color: "#D63384" }, 
-            { name: "Puerto", price: "M200" }, // 15
+            { name: "Puerto", price: "M200" }, 
             { name: "Parque M.\nCristina", price: "M180", color: "#F47D20" }, 
-            { name: "Caja Comunidad" }, // 17
+            { name: "Caja Comunidad" }, 
             { name: "Pza. Verboom", price: "M180", color: "#F47D20" }, 
             { name: "Calle Sevilla", price: "M200", color: "#F47D20" }, 
-            { name: "PARKING\nGRATIS", type: 'corner' }, // 20
+            { name: "PARKING\nGRATIS", type: 'corner' }, 
             { name: "El Rinconcillo", price: "M220", color: "#E31E24" }, 
-            { name: "? Suerte" }, // 22
+            { name: "? Suerte" }, 
             { name: "S. José Artesano", price: "M220", color: "#E31E24" }, 
             { name: "La Ermita", price: "M240", color: "#E31E24" }, 
-            { name: "Est. Autobús", price: "M200" }, // 25
+            { name: "Est. Autobús", price: "M200" }, 
             { name: "Getares", price: "M260", color: "#FFDE00" }, 
             { name: "San García", price: "M260", color: "#FFDE00" }, 
-            { name: "Emalgesa", price: "M150" }, // 28
-            { name: "El Saladillo", price: "M280", color: "#FFDE00" }, 
-            { name: "A LA\nCÁRCEL", type: 'corner' }, // 30
+            { name: "Emalgesa", price: "M150" }, 
+            { name: "Lian Chan Po", price: "M280", color: "#FFDE00" }, 
+            { name: "A LA\nCÁRCEL", type: 'corner' }, 
             { name: "Pelayo", price: "M300", color: "#169A4C" }, 
-            { name: "El Cobre", price: "M300", color: "#169A4C" }, 
-            { name: "Caja Comunidad" }, // 33
+            { name: "San Bernabé", price: "M300", color: "#169A4C" }, 
+            { name: "Caja Comunidad" }, 
             { name: "Los Pastores", price: "M320", color: "#169A4C" }, 
-            { name: "Helipuerto", price: "M200" }, // 35
-            { name: "? Suerte" }, // 36
+            { name: "Helipuerto", price: "M200" }, 
+            { name: "? Suerte" }, 
             { name: "El Faro", price: "M350", color: "#1262B3" }, 
-            { name: "Impuesto Lujo", price: "Paga M100" }, // 38
+            { name: "Impuesto Lujo", price: "Paga M100" }, 
             { name: "Los Pinos", price: "M400", color: "#1262B3" } 
         ];
     }
@@ -150,24 +146,20 @@ export default class BoardController {
         const isCorner = (index % 10 === 0);
         const cw = isCorner ? 384 : 256;
         const ch = 384; 
-        
         const canvas = document.createElement('canvas');
         canvas.width = cw;
         canvas.height = ch;
         const ctx = canvas.getContext('2d');
-
-        const boardColor = '#d4efdf'; 
+        const boardColor = '#b8e2c8'; 
         ctx.fillStyle = boardColor; 
         ctx.fillRect(0, 0, cw, ch);
         ctx.strokeStyle = '#000000';
         ctx.lineWidth = 4; ctx.strokeRect(0, 0, cw, ch);
-
         ctx.save();
         if (isCorner) {
             ctx.translate(cw/2, ch/2);
             if (index === 20) ctx.rotate(3*Math.PI/4); 
             else if (index === 30) ctx.rotate(-3*Math.PI/4); 
-
             if (index === 0) {
                 ctx.fillStyle = boardColor; ctx.fillRect(-cw/2, -ch/2, cw, ch); ctx.strokeRect(-cw/2, -ch/2, cw, ch);
                 ctx.fillStyle = '#E31E24'; ctx.beginPath(); ctx.moveTo(140, 60); ctx.lineTo(-40, 60); ctx.lineTo(-40, 30); 
@@ -221,32 +213,14 @@ export default class BoardController {
         }
         ctx.restore();
         const texture = new THREE.CanvasTexture(canvas);
+        texture.colorSpace = THREE.SRGBColorSpace;
         texture.anisotropy = this.renderer.capabilities.getMaxAnisotropy();
         return texture;
     }
 
-    createCenterTexture() {
-        const cw = 2048; const ch = 2048;
-        const canvas = document.createElement('canvas');
-        canvas.width = cw; canvas.height = ch;
-        const ctx = canvas.getContext('2d');
-        const boardColor = '#b8e2c8';
-        ctx.fillStyle = boardColor; ctx.fillRect(0, 0, cw, ch);
-        ctx.save(); ctx.translate(cw/2, ch/2); ctx.rotate(-Math.PI / 4);
-        ctx.fillStyle = '#E31E24'; const logoW = 1600; const logoH = 350; ctx.fillRect(-logoW/2, -logoH/2, logoW, logoH);
-        ctx.strokeStyle = '#fff'; ctx.lineWidth = 14; ctx.strokeRect(-logoW/2 + 8, -logoH/2 + 8, logoW - 16, logoH - 16);
-        ctx.strokeStyle = '#000'; ctx.lineWidth = 6; ctx.strokeRect(-logoW/2, -logoH/2, logoW, logoH);
-        ctx.fillStyle = '#fff'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-        ctx.font = 'bold 200px Arial, sans-serif'; ctx.strokeStyle = '#000'; ctx.lineWidth = 12; ctx.lineJoin = "round";
-        ctx.strokeText("MONOPOLY", 0, -40); ctx.fillText("MONOPOLY", 0, -40);
-        ctx.fillStyle = '#000'; ctx.font = 'bold 85px Arial, sans-serif'; ctx.fillText("ALGECIRAS", 0, 110); ctx.restore();
-        const texture = new THREE.CanvasTexture(canvas);
-        texture.anisotropy = this.renderer.capabilities.getMaxAnisotropy();
-        return texture;
-    }
+
 
     generateBoard() {
-        // Escala para encajar en el cuadrado del fondo 2D
         const scale = 2.45; 
         const spaceW = 4.6 * scale;
         const spaceH = 7.0 * scale;
@@ -268,26 +242,50 @@ export default class BoardController {
             else if (i < 40) { x = rowOffset; z = -rowOffset + spaceH/2 + spaceW/2 + (i-31)*spaceW; rotationY = Math.PI / 2; }
 
             const spaceData = this.monopolyData[i];
-            const sideMat = new THREE.MeshStandardMaterial({ color: '#b8e2c8', roughness: 0.8, metalness: 0.05 });
+            const sideMat = new THREE.MeshStandardMaterial({ color: '#b8e2c8', roughness: 1.0, metalness: 0 });
             const topTexture = this.createSpaceTexture(spaceData, i);
-            const topMat = new THREE.MeshStandardMaterial({ map: topTexture, roughness: 0.8, metalness: 0.05 });
+            const topMat = new THREE.MeshStandardMaterial({ map: topTexture, roughness: 1.0, metalness: 0 });
             const materials = [sideMat, sideMat, topMat, sideMat, sideMat, sideMat];
             const mesh = new THREE.Mesh(geo, materials);
             mesh.position.set(x, 0, z);
             if (!isCorner) mesh.rotation.y = rotationY;
             mesh.receiveShadow = true; mesh.castShadow = true;
-            this.boardGroup.add(mesh); // Añadir al grupo
+            this.boardGroup.add(mesh);
             this.spaceMeshes.push(mesh);
             this.spaceCoordinates[i] = new THREE.Vector3(x, 0.5, z);
         }
         
-        const innerGeo = new THREE.PlaneGeometry(rowOffset*2 - spaceH, rowOffset*2 - spaceH);
-        const innerMat = new THREE.MeshStandardMaterial({ map: this.createCenterTexture(), roughness: 1.0, metalness: 0 });
+        const centerSize = rowOffset * 2 - spaceH;
+
+        // Plano verde de fondo (color del tablero)
+        const innerGeo = new THREE.PlaneGeometry(centerSize, centerSize);
+        const innerMat = new THREE.MeshStandardMaterial({ color: '#b8e2c8', roughness: 1.0, metalness: 0 });
         const innerMesh = new THREE.Mesh(innerGeo, innerMat);
         innerMesh.rotation.x = -Math.PI / 2;
         innerMesh.position.y = -0.49; 
         innerMesh.receiveShadow = true;
-        this.boardGroup.add(innerMesh); // Añadir al grupo
+        this.boardGroup.add(innerMesh);
+
+        const logoTexture = new THREE.TextureLoader().load('./assets/logo_algeciras.png');
+        logoTexture.colorSpace = THREE.SRGBColorSpace;
+        const logoMat = new THREE.MeshStandardMaterial({
+            map: logoTexture,
+            transparent: true,
+            alphaTest: 0.05,
+            roughness: 0.8,
+            metalness: 0
+        });
+        const logoGroup = new THREE.Group();
+        logoGroup.position.y = -0.47;
+        logoGroup.rotation.y = Math.PI / 4; 
+        const logoWidth = centerSize * 0.8;
+        const logoHeight = logoWidth / 2.2;
+        const logoGeo = new THREE.PlaneGeometry(logoWidth, logoHeight);
+        const logoMesh = new THREE.Mesh(logoGeo, logoMat);
+        logoMesh.rotation.x = -Math.PI / 2;
+        logoGroup.add(logoMesh);
+        this.boardGroup.add(logoGroup);
+
         this.addCardDecks(scale);
     }
 
@@ -297,33 +295,31 @@ export default class BoardController {
         const chestTexture = loader.load('./assets/cartas/comunidad.png');
         [luckTexture, chestTexture].forEach(tex => { 
             tex.center.set(0.5, 0.5); 
-            tex.rotation = 0; // Se mantiene 0 para que siga la orientación del mesh
+            tex.rotation = 0;
             tex.colorSpace = THREE.SRGBColorSpace;
             tex.wrapS = tex.wrapT = THREE.ClampToEdgeWrapping;
         });
         
-        const deckW = 9.0 * scale; const deckH = 0.8; const deckD = 13.0 * scale; 
+        const deckW = 13.0 * scale; const deckH = 0.8; const deckD = 9.0 * scale; 
         const deckGeo = new THREE.BoxGeometry(deckW, deckH, deckD);
         const sideMat = new THREE.MeshStandardMaterial({ color: '#f5f5f5', roughness: 0.9 });
         const bottomMat = new THREE.MeshStandardMaterial({ color: '#ddd', roughness: 1.0 });
         
         const luckMaterials = [sideMat, sideMat, new THREE.MeshStandardMaterial({ map: luckTexture, roughness: 0.5, transparent: true }), bottomMat, sideMat, sideMat];
         const luckDeck = new THREE.Mesh(deckGeo, luckMaterials);
-        // Suerte en la parte inferior derecha (como en el real)
+        // Suerte en la parte inferior derecha del centro, horizontal (sin rotación)
         luckDeck.position.set(10 * scale, 0.4, 10 * scale); 
-        luckDeck.rotation.y = Math.PI / 4; 
+        luckDeck.rotation.y = Math.PI / 4;
         luckDeck.castShadow = true; 
         this.boardGroup.add(luckDeck);
         
         const chestMaterials = [sideMat, sideMat, new THREE.MeshStandardMaterial({ map: chestTexture, roughness: 0.5, transparent: true }), bottomMat, sideMat, sideMat];
         const chestDeck = new THREE.Mesh(deckGeo, chestMaterials);
-        // Caja de Comunidad en la parte superior izquierda
         chestDeck.position.set(-10 * scale, 0.4, -10 * scale);
-        chestDeck.rotation.y = Math.PI / 4; 
+        chestDeck.rotation.y = Math.PI / 4;
         chestDeck.castShadow = true; 
         this.boardGroup.add(chestDeck);
         
-        // Efecto de "pila" de cartas
         for(let i=1; i<=3; i++) {
             const offset = i * 0.1;
             const luckExtra = luckDeck.clone(); luckExtra.position.y -= offset; this.boardGroup.add(luckExtra);

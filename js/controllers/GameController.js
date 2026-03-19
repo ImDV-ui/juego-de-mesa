@@ -13,7 +13,6 @@ export default class GameController {
             properties: [],
             isGameOver: false
         };
-        // Controla el estado del pago actual (si es compra, alquiler, a quién se le paga...)
         this.currentPayment = { active: false, due: 0, paid: 0, type: null, space: null, owner: null };
 
         this.boardController = new BoardController();
@@ -25,7 +24,6 @@ export default class GameController {
     }
 
     async init() {
-        console.log('GameController initializing...');
         await this.loadProperties();
         await this.loadCards();
         
@@ -36,7 +34,7 @@ export default class GameController {
         await this.diceController.init();
         this.dragController.init();
         
-        this.tokenController.setupGlobalContext(this.boardController.scene, this.boardController.spaceCoordinates);
+        this.tokenController.setupGlobalContext(this.boardController.scene, this.boardController.spaceCoordinates, this.boardController.boardGroup);
         this.tokenController.init();
 
         this.setupMenu();
@@ -110,7 +108,6 @@ export default class GameController {
 
         pCountRadios.forEach(r => r.addEventListener('change', (e) => updateInputs(parseInt(e.target.value))));
         
-        // Init with default (4)
         updateInputs(4);
 
         startBtn.addEventListener('click', () => this.handleStartGame());
@@ -120,16 +117,9 @@ export default class GameController {
         const configItems = document.querySelectorAll('.player-config-item');
         const playersConfig = [];
         
-        // Reset player array to avoid duplicates and out-of-bounds crashes
         this.gameState.players = [];
-        // Clear previous tokens too if necessary
         this.tokenController.tokens = [];
-        this.boardController.spaceMeshes.forEach(m => {
-             // We don't remove space meshes, only player tokens from scene
-        });
-        this.tokenController.scene.children = this.tokenController.scene.children.filter(c => !c.userData.isToken);
-        // Wait, better to just let TokenController handle its own cleanup if I have that.
-        // For now, let's just clear the array and ensure the loop is safe.
+        this.tokenController.boardGroup.children = this.tokenController.boardGroup.children.filter(c => !c.userData.isToken);
 
         for (let i = 0; i < configItems.length; i++) {
             const name = configItems[i].querySelector('.p-name-input').value.trim();
@@ -143,14 +133,12 @@ export default class GameController {
             playersConfig.push({ name, color, piece });
         }
 
-        // Crear jugadores
         playersConfig.forEach((conf, idx) => {
             const p = new Player(idx + 1, conf.name, conf.color);
             this.gameState.players.push(p);
             this.bankController.distributeInitialMoney(p);
         });
 
-        // Crear tokens 3D
         for (let i = 0; i < this.gameState.players.length; i++) {
             const pConf = playersConfig[i];
             let modelPath;
@@ -182,13 +170,11 @@ export default class GameController {
             });
         }
 
-        // Update UI
         const firstPlayer = this.gameState.players[0];
         this.updatePlayerWalletUI(firstPlayer);
         this.updatePlayerInventoryUI(firstPlayer);
         this.updateTurnUI();
 
-        // Ocultar Overlay
         document.getElementById('setup-overlay').classList.add('hidden');
     }
 
@@ -257,7 +243,6 @@ export default class GameController {
                 <span class="inv-row-price">${baseRent !== null ? `$${baseRent}` : '—'}</span>
             `;
 
-            // Click opens the detail modal
             row.addEventListener('click', () => this.openPropertyDetail(prop));
             container.appendChild(row);
         });
@@ -356,42 +341,31 @@ export default class GameController {
             if (!denomStr) return;
             const denom = parseInt(denomStr, 10);
             
-            // El jugador actual que tiene que pagar
             const player = this.gameState.players[this.gameState.currentPlayerIndex]; 
             
             if (this.currentPayment.active && player.wallet[denom] > 0) {
-                // Le quitamos el billete de la mano
                 player.wallet[denom] -= 1;
                 this.currentPayment.paid += denom;
                 
                 this.updatePlayerWalletUI(player);
                 document.getElementById('payment-paid').innerText = `$${this.currentPayment.paid}`;
                 
-                // === LÓGICA CUANDO EL PAGO SE COMPLETA ===
                 if (this.currentPayment.paid >= this.currentPayment.due) {
                     const change = this.currentPayment.paid - this.currentPayment.due;
                     
                     if (this.currentPayment.type === 'buy') {
-                        // COMPRA DE PROPIEDAD: El banco devuelve el cambio si sobra
                         if (change > 0) this.bankController.receiveFromBank(player, change);
                         
-                        // Le damos la propiedad al jugador
                         this.currentPayment.space.owner = player;
                         player.properties.push(this.currentPayment.space);
-                        console.log(`¡${player.name} compró ${this.currentPayment.space.name}!`);
                         this.updatePlayerInventoryUI(player);
 
                     } else if (this.currentPayment.type === 'rent') {
-                        // PAGO DE ALQUILER: El dinero va al OTRO jugador
-                        console.log(`Pagando alquiler a ${this.currentPayment.owner.name}`);
-                        // Le damos el importe exacto de la deuda al propietario
                         this.bankController.receiveFromBank(this.currentPayment.owner, this.currentPayment.due);
                         
-                        // Si el que paga metió billetes más grandes, el BANCO le da el cambio
                         if (change > 0) this.bankController.receiveFromBank(player, change);
 
                     } else if (this.currentPayment.type === 'tax') {
-                        // PAGO DE IMPUESTOS: El dinero va al banco
                         if (change > 0) this.bankController.receiveFromBank(player, change);
                     }
                     
@@ -422,7 +396,7 @@ export default class GameController {
                 const player = this.gameState.players[this.gameState.currentPlayerIndex];
                 if(this.bankController.buyHouse(player, this.currentPayment.space)) {
                     this.updatePlayerWalletUI(player);
-                    this.openPaymentModal(this.currentPayment.space, 0, 'manage'); // Refresh modal
+                    this.openPaymentModal(this.currentPayment.space, 0, 'manage');
                 }
             });
         }
@@ -500,7 +474,6 @@ export default class GameController {
                 cardIcon.innerText = type === 'tax' ? "💍" : "🏢";
             }
 
-            // --- Tabla de alquileres ---
             if (rentTable) {
                 rentTable.innerHTML = '';
 
@@ -510,7 +483,6 @@ export default class GameController {
                         : ['Alquiler', '🏠 × 1', '🏠 × 2', '🏠 × 3', '🏠 × 4', '🏨 Hotel'];
 
                     spaceData.rent.forEach((val, i) => {
-                        // Calcula si esta es la fila activa (el alquiler que hay que pagar)
                         const isActive = (type === 'rent' && val === amount);
                         const row = document.createElement('div');
                         row.className = 'rent-row' + (isActive ? ' rent-highlight' : '');
@@ -539,7 +511,6 @@ export default class GameController {
         this.currentPayment = { active: false, due: 0, paid: 0, type: null, space: null, owner: null };
         document.getElementById('payment-modal').classList.add('hidden');
         
-        // Si no era un menú de gestión manual (donde el usuario elige cuándo terminar), pasamos turno
         if (prevType !== 'manage') {
             this.nextTurn();
         }
@@ -627,7 +598,6 @@ export default class GameController {
         this.gameState.currentPlayerIndex = (this.gameState.currentPlayerIndex + 1) % this.gameState.players.length;
         const nextPlayer = this.gameState.players[this.gameState.currentPlayerIndex];
         
-        console.log(`--- Turno de ${nextPlayer.name} ---`);
         this.updatePlayerWalletUI(nextPlayer);
         this.updatePlayerInventoryUI(nextPlayer);
         this.updateTurnUI();
@@ -651,7 +621,6 @@ export default class GameController {
         try {
             const response = await fetch('./js/database/properties.json');
             this.gameState.properties = await response.json();
-            console.log('Properties successfully loaded:', this.gameState.properties);
         } catch (error) {
             console.error('Error loading game properties:', error);
         }

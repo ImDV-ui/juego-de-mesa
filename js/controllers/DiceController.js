@@ -7,13 +7,11 @@ export default class DiceController {
         this.isRolling = false;
         this.onRollComplete = null;
         
-        // Settings
         this.diceCount = 2;
         this.container = null;
         this.diceMeshes = [];
         this.diceBodies = [];
         
-        // State
         this.animationFrameId = null;
         this.stableFrames = 0;
     }
@@ -25,9 +23,7 @@ export default class DiceController {
     }
 
     async init() {
-        console.log('DiceController initializing (Global Context)...');
         
-        // Materials
         const diceMat = new CANNON.Material();
         const diceFloorContact = new CANNON.ContactMaterial(this.floorPhysicsMaterial, diceMat, {
             friction: 0.3, 
@@ -35,10 +31,8 @@ export default class DiceController {
         });
         this.world.addContactMaterial(diceFloorContact);
 
-        // 3. Load Custom Asset
         await this.loadDiceModel(diceMat);
 
-        // 4. Handle UI
         const rollBtn = document.getElementById('roll-button');
         if (rollBtn) {
             rollBtn.addEventListener('click', () => {
@@ -50,7 +44,6 @@ export default class DiceController {
             });
         }
 
-        // Handle popup close
         const closeBtn = document.getElementById('close-popup-btn');
         if (closeBtn) {
             closeBtn.addEventListener('click', () => {
@@ -64,13 +57,10 @@ export default class DiceController {
             });
         }
 
-        // Resize handler
         window.addEventListener('resize', this.onResize.bind(this));
 
-        // Start Loop
         this.clock = new THREE.Clock();
         this.animate();
-        console.log('DiceController initialized & calibrated successfully.');
     }
 
     async loadDiceModel(physicsMaterial) {
@@ -147,8 +137,6 @@ export default class DiceController {
     animate() {
         this.animationFrameId = requestAnimationFrame(this.animate.bind(this));
         
-        // Physics stepping is handled globally by BoardController
-
         let allStopped = true;
 
         for(let i = 0; i < this.diceCount; i++) {
@@ -187,14 +175,13 @@ export default class DiceController {
         const results = [];
         let total = 0;
 
-        // VECTORES CALIBRADOS 
         const faceNormals = [
-            { vector: new THREE.Vector3(0, 1, 0), value: 4 },  // Y Positivo
-            { vector: new THREE.Vector3(0, -1, 0), value: 3 }, // Y Negativo
-            { vector: new THREE.Vector3(1, 0, 0), value: 2 },  // X Positivo
-            { vector: new THREE.Vector3(-1, 0, 0), value: 1 }, // X Negativo
-            { vector: new THREE.Vector3(0, 0, 1), value: 6 },  // Z Positivo
-            { vector: new THREE.Vector3(0, 0, -1), value: 5 }  // Z Negativo
+            { vector: new THREE.Vector3(0, 1, 0), value: 4 },  
+            { vector: new THREE.Vector3(0, -1, 0), value: 3 }, 
+            { vector: new THREE.Vector3(1, 0, 0), value: 2 },  
+            { vector: new THREE.Vector3(-1, 0, 0), value: 1 }, 
+            { vector: new THREE.Vector3(0, 0, 1), value: 6 },  
+            { vector: new THREE.Vector3(0, 0, -1), value: 5 }  
         ];
 
         this.diceMeshes.forEach(mesh => {
@@ -226,6 +213,5 @@ export default class DiceController {
     }
 
     onResize() {
-        // Handled globally by BoardController
     }
 }

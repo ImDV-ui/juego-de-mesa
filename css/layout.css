@@ -9,12 +9,16 @@ body {
     margin: 0;
     padding: 0;
     font-family: 'Outfit', 'Arial Rounded MT Bold', sans-serif;
-    overflow: hidden; /* Oculta los scrollbars para el canvas fijo */
-    user-select: none; /* Prevenir selección de texto accidental */
+    overflow: hidden;
+    /* Oculta los scrollbars para el canvas fijo */
+    user-select: none;
+    /* Prevenir selección de texto accidental */
 }
 
-input, textarea {
-    user-select: text; /* Permitir selección en inputs */
+input,
+textarea {
+    user-select: text;
+    /* Permitir selección en inputs */
 }
 
 .hidden {

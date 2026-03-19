@@ -7,6 +7,7 @@
     <title>Monopoly Algeciras</title>
     <link rel="stylesheet" href="css/layout.css">
     <link rel="stylesheet" href="css/elements.css">
+    <link rel="icon" type="image/png" href="assets/favicon.png">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&display=swap" rel="stylesheet">
 
     <script type="importmap">
@@ -26,16 +27,17 @@
     <div id="setup-overlay" class="setup-overlay">
         <div class="setup-card">
             <div class="setup-header">
-                <img src="assets/menu algeciras.png" alt="Monopoly Algeciras" class="setup-logo">
+                <img src="assets/menu algeciras.jpg" alt="Monopoly Algeciras" class="setup-logo">
             </div>
-            
+
             <div class="setup-body">
                 <div class="setup-section">
                     <label>¿Cuántos jugadores seréis?</label>
                     <div class="player-count-chips">
                         <label class="count-chip"><input type="radio" name="p-count" value="2"> <span>2</span></label>
                         <label class="count-chip"><input type="radio" name="p-count" value="3"> <span>3</span></label>
-                        <label class="count-chip"><input type="radio" name="p-count" value="4" checked> <span>4</span></label>
+                        <label class="count-chip"><input type="radio" name="p-count" value="4" checked>
+                            <span>4</span></label>
                     </div>
                 </div>
 
@@ -68,7 +70,7 @@
     </div>
 
     <div id="player-wallet" class="player-wallet">
-        
+
         <button id="toggle-wallet-btn" class="btn-wallet-toggle" title="Ocultar/Mostrar Billetera">⬅ Ocultar</button>
 
         <div class="wallet-scroll-area">
@@ -144,7 +146,7 @@
             <div id="payment-dropzone" class="payment-dropzone">
                 💵 Arrastra tus billetes aquí para pagar
             </div>
-            
+
             <div id="house-actions" class="house-actions hidden">
                 <p>¡Tienes el monopolio! Puedes mejorar esta propiedad.</p>
                 <div class="house-buy-row">
@@ -179,7 +181,8 @@
 
     <!-- PANEL DE PROPIEDADES (top-right) -->
     <div id="inventory-panel" class="inv-panel">
-        <button id="inv-toggle-btn" class="inv-toggle-btn">🏘️ Propiedades <span id="inv-count" class="inv-count">0</span> <span class="inv-arrow">▼</span></button>
+        <button id="inv-toggle-btn" class="inv-toggle-btn">🏘️ Propiedades <span id="inv-count"
+                class="inv-count">0</span> <span class="inv-arrow">▼</span></button>
         <div id="inv-panel-body" class="inv-panel-body">
             <div id="inventory-cards" class="inventory-cards">
                 <p class="inventory-empty">Sin propiedades aún</p>
