@@ -1,5 +1,7 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
+import { MTLLoader } from 'three/addons/loaders/MTLLoader.js';
 
 export default class TokenController {
     constructor() {
@@ -18,50 +20,72 @@ export default class TokenController {
     }
 
     async createPlayerToken(playerId, modelPath) {
-        // Load model
-        const loader = new GLTFLoader();
         let modelObj = null;
         
-        await new Promise((resolve, reject) => {
-            loader.load(
-                modelPath,
-                (gltf) => {
-                    const model = gltf.scene;
-                    
-                    // Center and scale model
-                    const box = new THREE.Box3().setFromObject(model);
-                    const center = box.getCenter(new THREE.Vector3());
-                    const size = box.getSize(new THREE.Vector3());
-                    const maxDim = Math.max(size.x, size.y, size.z);
-                    const scale = 2.0 / maxDim; // Slightly smaller to fit 2x2 (was 2.5)
-                    model.scale.set(scale, scale, scale);
-                    model.position.sub(center.multiplyScalar(scale)); // Center it
-                    
-                    // Recorrer el modelo para habilitar sombras y aplicar material CROMADO
-                    model.traverse(c => {
-                        if (c.isMesh) {
-                            c.castShadow = true;
-                            c.receiveShadow = true;
-                            
-                            // Material cromado perfecto que SOLO APLICA AL COCHE
-                            c.material = new THREE.MeshStandardMaterial({
-                                color: 0xffffff, // Base blanca pura
-                                metalness: 1.0,  // 100% metal
-                                roughness: 0.1,  // Muy pulido
-                                envMap: this.scene.userData.envTexture, // <-- Usamos el entorno guardado
-                                envMapIntensity: 1.5 // Aumentamos el reflejo
-                            });
-                        }
-                    });
+        const isOBJ = modelPath.toLowerCase().endsWith('.obj');
 
-                    this.scene.add(model);
-                    modelObj = model;
-                    resolve();
-                },
-                undefined,
-                (err) => reject(err)
-            );
-        });
+        if (isOBJ) {
+            // Load OBJ/MTL
+            const mtlPath = modelPath.replace('.obj', '.mtl');
+            const mtlLoader = new MTLLoader();
+            
+            const materials = await new Promise((resolve, reject) => {
+                mtlLoader.load(mtlPath, resolve, undefined, reject);
+            });
+            materials.preload();
+
+            const objLoader = new OBJLoader();
+            objLoader.setMaterials(materials);
+            
+            modelObj = await new Promise((resolve, reject) => {
+                objLoader.load(modelPath, resolve, undefined, reject);
+            });
+        } else {
+            // Load GLTF
+            const loader = new GLTFLoader();
+            await new Promise((resolve, reject) => {
+                loader.load(
+                    modelPath,
+                    (gltf) => {
+                        modelObj = gltf.scene;
+                        resolve();
+                    },
+                    undefined,
+                    (err) => reject(err)
+                );
+            });
+        }
+
+        // Common processing for both formats
+        if (modelObj) {
+            // Center and scale model
+            const box = new THREE.Box3().setFromObject(modelObj);
+            const center = box.getCenter(new THREE.Vector3());
+            const size = box.getSize(new THREE.Vector3());
+            const maxDim = Math.max(size.x, size.y, size.z);
+            const scale = 2.0 / maxDim; 
+            modelObj.scale.set(scale, scale, scale);
+            modelObj.position.sub(center.multiplyScalar(scale)); // Center it
+            
+            // Recorrer el modelo para habilitar sombras y aplicar material CROMADO
+            modelObj.traverse(c => {
+                if (c.isMesh) {
+                    c.castShadow = true;
+                    c.receiveShadow = true;
+                    
+                    // Material cromado perfecto
+                    c.material = new THREE.MeshStandardMaterial({
+                        color: 0xffffff,
+                        metalness: 1.0,
+                        roughness: 0.1,
+                        envMap: this.scene.userData.envTexture,
+                        envMapIntensity: 1.5
+                    });
+                }
+            });
+
+            this.scene.add(modelObj);
+        }
 
         const token = {
             id: playerId,

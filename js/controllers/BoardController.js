@@ -25,11 +25,16 @@ export default class BoardController {
         if (!this.container) return;
 
         this.scene = new THREE.Scene();
-        this.scene.background = new THREE.Color(0x2c3e50); 
+        
+        // Cargar el fondo 2D como estaba originalmente
+        new THREE.TextureLoader().load('assets/fondo_juego.png', (texture) => {
+            this.scene.background = texture;
+            texture.colorSpace = THREE.SRGBColorSpace;
+        });
 
         const aspect = this.container.clientWidth / this.container.clientHeight;
-        this.camera = new THREE.PerspectiveCamera(45, aspect, 0.1, 1000);
-        this.camera.position.set(0, 90, 90); 
+        this.camera = new THREE.PerspectiveCamera(45, aspect, 0.1, 1500);
+        this.camera.position.set(0, 100, 100); // Alejado un poco para ver más escena
         this.camera.lookAt(0, 0, 0);
 
         this.renderer = new THREE.WebGLRenderer({ alpha: false, antialias: true });
@@ -40,26 +45,28 @@ export default class BoardController {
         this.container.appendChild(this.renderer.domElement);
 
         const pmremGenerator = new THREE.PMREMGenerator(this.renderer);
-        this.scene.userData.envTexture = pmremGenerator.fromScene(new RoomEnvironment(), 0.04).texture;
+        const envScene = new RoomEnvironment();
+        this.scene.environment = pmremGenerator.fromScene(envScene, 0.04).texture;
 
         this.controls = new OrbitControls(this.camera, this.renderer.domElement);
         this.controls.enableDamping = true;
         this.controls.dampingFactor = 0.05;
         this.controls.maxPolarAngle = Math.PI / 2 - 0.1;
         this.controls.minDistance = 20;
-        this.controls.maxDistance = 200;
+        this.controls.maxDistance = 600;
 
+        // Físicas
         this.world = new CANNON.World({ gravity: new CANNON.Vec3(0, -90, 0) });
         this.floorPhysicsMaterial = new CANNON.Material();
         const floorShape = new CANNON.Plane();
         const floorBody = new CANNON.Body({ mass: 0, material: this.floorPhysicsMaterial });
         floorBody.addShape(floorShape);
         floorBody.quaternion.setFromEuler(-Math.PI / 2, 0, 0);
-        floorBody.position.set(0, 0.5, 0); 
+        floorBody.position.set(0, -0.5, 0); 
         this.world.addBody(floorBody);
 
-        const wallOffset = 30;
-        const wallShape = new CANNON.Box(new CANNON.Vec3(wallOffset, 50, 1));
+        const wallOffset = 85; 
+        const wallShape = new CANNON.Box(new CANNON.Vec3(wallOffset, 100, 1));
         const walls = [
             { pos: [0, 0, wallOffset], rot: [0, 0, 0] },     
             { pos: [0, 0, -wallOffset], rot: [0, Math.PI, 0] },    
@@ -74,20 +81,13 @@ export default class BoardController {
             this.world.addBody(wallBody);
         });
 
-        // Luz ligeramente fría para resaltar el tono azulado
-        const ambientLight = new THREE.AmbientLight(0xffffff, 1.0); 
+        // Luces (Vividas)
+        const ambientLight = new THREE.AmbientLight(0xffffff, 1.1); 
         this.scene.add(ambientLight);
         
-        const dirLight = new THREE.DirectionalLight(0xf0f8ff, 0.7); // Luz direccional "AliceBlue" (fría)
-        dirLight.position.set(20, 80, 20);
+        const dirLight = new THREE.DirectionalLight(0xffffff, 0.9); 
+        dirLight.position.set(20, 100, 20);
         dirLight.castShadow = true;
-        dirLight.shadow.mapSize.width = 2048;
-        dirLight.shadow.mapSize.height = 2048;
-        dirLight.shadow.camera.left = -40;
-        dirLight.shadow.camera.right = 40;
-        dirLight.shadow.camera.top = 40;
-        dirLight.shadow.camera.bottom = -40;
-        dirLight.shadow.bias = -0.0005;
         this.scene.add(dirLight);
 
         this.generateBoard();
@@ -150,7 +150,7 @@ export default class BoardController {
         canvas.height = ch;
         const ctx = canvas.getContext('2d');
 
-        const boardColor = '#CFE9DC'; // Light mint blue/green standard for Monopoly boards
+        const boardColor = '#d4efdf'; 
         ctx.fillStyle = boardColor; 
         ctx.fillRect(0, 0, cw, ch);
         
@@ -166,259 +166,101 @@ export default class BoardController {
             else if (index === 30) ctx.rotate(-3*Math.PI/4); 
 
             if (index === 0) {
-                // SALIDA / GO Space
-                ctx.fillStyle = boardColor; // Use uniform board color
+                ctx.fillStyle = boardColor;
                 ctx.fillRect(-cw/2, -ch/2, cw, ch);
                 ctx.strokeRect(-cw/2, -ch/2, cw, ch);
-                
-                // Red Arrow pointing Left
                 ctx.fillStyle = '#E31E24';
                 ctx.beginPath();
-                ctx.moveTo(140, 60); 
-                ctx.lineTo(-40, 60); 
-                ctx.lineTo(-40, 30); 
-                ctx.lineTo(-130, 90); 
-                ctx.lineTo(-40, 150); 
-                ctx.lineTo(-40, 120); 
-                ctx.lineTo(140, 120); 
-                ctx.closePath();
-                ctx.fill(); 
-                ctx.lineWidth = 4;
-                ctx.strokeStyle = '#000';
-                ctx.stroke();
-
-                // "SALIDA" Text
-                ctx.fillStyle = '#E31E24'; // Red text
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-                ctx.font = 'bold 75px Arial';
-                ctx.fillText("SALIDA", 0, -10);
-                // Text stroke for better legibility
-                ctx.lineWidth = 2;
-                ctx.strokeStyle = '#000';
-                ctx.strokeText("SALIDA", 0, -10);
-                
-                // Extra text
-                ctx.fillStyle = '#000';
-                ctx.font = 'bold 22px Arial';
-                ctx.fillText("COBRE M200 CADA VEZ", 0, -110);
-                ctx.fillText("QUE PASE POR AQUÍ", 0, -80);
-
+                ctx.moveTo(140, 60); ctx.lineTo(-40, 60); ctx.lineTo(-40, 30); 
+                ctx.lineTo(-130, 90); ctx.lineTo(-40, 150); ctx.lineTo(-40, 120); ctx.lineTo(140, 120); 
+                ctx.closePath(); ctx.fill(); 
+                ctx.lineWidth = 4; ctx.strokeStyle = '#000'; ctx.stroke();
+                ctx.fillStyle = '#E31E24'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+                ctx.font = 'bold 75px Arial'; ctx.fillText("SALIDA", 0, -10);
+                ctx.lineWidth = 2; ctx.strokeStyle = '#000'; ctx.strokeText("SALIDA", 0, -10);
+                ctx.fillStyle = '#000'; ctx.font = 'bold 22px Arial';
+                ctx.fillText("COBRE M200 CADA VEZ", 0, -110); ctx.fillText("QUE PASE POR AQUÍ", 0, -80);
             } else if (index === 10) {
-                // CÁRCEL / Jail Space
-                // Background
-                ctx.fillStyle = boardColor; // Uniform board color
-                ctx.fillRect(-cw/2, -ch/2, cw, ch);
-                ctx.strokeRect(-cw/2, -ch/2, cw, ch);
-
-                // Orange jail square in top-right area
-                ctx.fillStyle = '#F47D20'; // Orange
-                ctx.fillRect(-50, -192, 242, 242); 
-                ctx.lineWidth = 6;
-                ctx.strokeStyle = '#000';
-                ctx.strokeRect(-50, -192, 242, 242);
-                
-                // Jail window background
-                ctx.fillStyle = '#ffffff'; // White window
-                ctx.fillRect(0, -142, 142, 80);
-                ctx.strokeRect(0, -142, 142, 80);
-
-                // Jail bars
-                ctx.beginPath();
-                for(let i=1; i<=4; i++) {
-                    ctx.moveTo(0 + i*(142/5), -142);
-                    ctx.lineTo(0 + i*(142/5), -62);
-                }
-                ctx.lineWidth = 4;
-                ctx.stroke();
-
-                ctx.fillStyle = '#000';
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-                ctx.font = 'bold 36px Arial';
-                ctx.fillText("EN LA", 71, -165);
-                ctx.fillText("CÁRCEL", 71, -30);
-
-                ctx.save();
-                ctx.translate(-121, -71);
-                ctx.rotate(Math.PI/2);
-                ctx.font = 'bold 36px Arial';
-                ctx.fillText("SÓLO", 0, 0);
-                ctx.restore();
-
-                ctx.save();
-                ctx.translate(71, 121);
-                ctx.font = 'bold 36px Arial';
-                ctx.fillText("VISITAS", 0, 0);
-                ctx.restore();
-
+                ctx.fillStyle = boardColor; ctx.fillRect(-cw/2, -ch/2, cw, ch); ctx.strokeRect(-cw/2, -ch/2, cw, ch);
+                ctx.fillStyle = '#F47D20'; ctx.fillRect(-50, -192, 242, 242); ctx.lineWidth = 6; ctx.strokeStyle = '#000'; ctx.strokeRect(-50, -192, 242, 242);
+                ctx.fillStyle = '#ffffff'; ctx.fillRect(0, -142, 142, 80); ctx.strokeRect(0, -142, 142, 80);
+                ctx.beginPath(); for(let i=1; i<=4; i++) { ctx.moveTo(0 + i*(142/5), -142); ctx.lineTo(0 + i*(142/5), -62); } ctx.lineWidth = 4; ctx.stroke();
+                ctx.fillStyle = '#000'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+                ctx.font = 'bold 36px Arial'; ctx.fillText("EN LA", 71, -165); ctx.fillText("CÁRCEL", 71, -30);
+                ctx.save(); ctx.translate(-121, -71); ctx.rotate(Math.PI/2); ctx.font = 'bold 36px Arial'; ctx.fillText("SÓLO", 0, 0); ctx.restore();
+                ctx.save(); ctx.translate(71, 121); ctx.font = 'bold 36px Arial'; ctx.fillText("VISITAS", 0, 0); ctx.restore();
             } else if (index === 20) {
-                ctx.fillStyle = '#000';
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-                ctx.font = 'bold 45px Arial'; 
-                ctx.fillText("PARKING", 0, -90);
-                ctx.font = '100px Arial';
-                ctx.fillText("🚗", 0, 10);
-                ctx.font = 'bold 45px Arial'; 
-                ctx.fillText("GRATUITO", 0, 110);
+                ctx.fillStyle = '#000'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+                ctx.font = 'bold 45px Arial'; ctx.fillText("PARKING", 0, -90); ctx.font = '100px Arial'; ctx.fillText("🚗", 0, 10);
+                ctx.font = 'bold 45px Arial'; ctx.fillText("GRATUITO", 0, 110);
             } else if (index === 30) {
-                ctx.fillStyle = '#000';
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-                ctx.font = 'bold 45px Arial'; 
-                ctx.fillText("IR A LA", 0, -90);
-                ctx.font = '100px Arial';
-                ctx.fillText("👮", 0, 10);
-                ctx.font = 'bold 45px Arial'; 
-                ctx.fillText("CÁRCEL", 0, 110);
+                ctx.fillStyle = '#000'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+                ctx.font = 'bold 45px Arial'; ctx.fillText("IR A LA", 0, -90); ctx.font = '100px Arial'; ctx.fillText("👮", 0, 10);
+                ctx.font = 'bold 45px Arial'; ctx.fillText("CÁRCEL", 0, 110);
             }
         } else {
             if(spaceData.color) {
-                ctx.fillStyle = spaceData.color;
-                ctx.fillRect(0, 0, cw, 80);
-                ctx.beginPath();
-                ctx.lineWidth = 4;
-                ctx.moveTo(0, 80); ctx.lineTo(cw, 80);
-                ctx.stroke();
+                ctx.fillStyle = spaceData.color; ctx.fillRect(0, 0, cw, 80); ctx.beginPath(); ctx.lineWidth = 4; ctx.moveTo(0, 80); ctx.lineTo(cw, 80); ctx.stroke();
             }
-
-            ctx.fillStyle = '#000';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            
+            ctx.fillStyle = '#000'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
             const hasColorHeader = !!spaceData.color;
             const nameY = hasColorHeader ? 120 : 70; 
-            
             ctx.font = 'bold 28px Arial, sans-serif'; 
-            
             if(spaceData.name.includes('\n')) {
-               const lines = spaceData.name.split('\n');
-               ctx.fillText(lines[0].toUpperCase(), cw/2, nameY);
-               ctx.fillText(lines[1].toUpperCase(), cw/2, nameY + 30); 
+               const lines = spaceData.name.split('\n'); ctx.fillText(lines[0].toUpperCase(), cw/2, nameY); ctx.fillText(lines[1].toUpperCase(), cw/2, nameY + 30); 
             } else if(spaceData.name.length > 10 && spaceData.name.indexOf(' ') !== -1) {
-               const parts = spaceData.name.split(' ');
-               ctx.fillText(parts[0].toUpperCase(), cw/2, nameY);
-               ctx.fillText(parts.slice(1).join(' ').toUpperCase(), cw/2, nameY + 30);
-            } else {
-               ctx.fillText(spaceData.name.toUpperCase(), cw/2, nameY + 15);
-            }
-            
+               const parts = spaceData.name.split(' '); ctx.fillText(parts[0].toUpperCase(), cw/2, nameY); ctx.fillText(parts.slice(1).join(' ').toUpperCase(), cw/2, nameY + 30);
+            } else { ctx.fillText(spaceData.name.toUpperCase(), cw/2, nameY + 15); }
             if(spaceData.price && !spaceData.name.includes("Impuesto")) {
-               ctx.font = 'bold 26px Arial, sans-serif';
-               ctx.fillText(spaceData.price.toUpperCase(), cw/2, ch - 25); 
-               ctx.beginPath();
-               ctx.lineWidth = 2; 
-               ctx.moveTo(cw * 0.1, ch - 48);
-               ctx.lineTo(cw * 0.9, ch - 48);
-               ctx.stroke();
+               ctx.font = 'bold 26px Arial, sans-serif'; ctx.fillText(spaceData.price.toUpperCase(), cw/2, ch - 25); 
+               ctx.beginPath(); ctx.lineWidth = 2; ctx.moveTo(cw * 0.1, ch - 48); ctx.lineTo(cw * 0.9, ch - 48); ctx.stroke();
             } else if(spaceData.price && spaceData.name.includes("Impuesto")) {
-               ctx.font = 'bold 28px Arial, sans-serif';
-               ctx.fillText(spaceData.price.toUpperCase(), cw/2, ch - 40);
+               ctx.font = 'bold 28px Arial, sans-serif'; ctx.fillText(spaceData.price.toUpperCase(), cw/2, ch - 40);
             }
-            
             if(spaceData.name.includes("Comunidad") || spaceData.name.includes("Suerte")) {
-               ctx.font = '90px Arial';
-               ctx.fillText(spaceData.name.includes("Suerte") ? "❓" : "🎁", cw/2, ch/2 + 25);
-            } else if(spaceData.name.includes("Renfe") || spaceData.name.includes("Autobús") || spaceData.name.includes("Helipuerto") || spaceData.name.includes("Puerto")) {
-               ctx.font = '90px Arial';
-               ctx.fillText("🚉", cw/2, ch/2 + 35);
-            } else if(spaceData.name.includes("Impuesto")) {
-               ctx.font = '90px Arial';
-               ctx.fillText("💍", cw/2, ch/2);
+               ctx.font = '90px Arial'; ctx.fillText(spaceData.name.includes("Suerte") ? "❓" : "🎁", cw/2, ch/2 + 25);
+            } else if(spaceData.name.includes("Renfe") || spaceData.name.includes("Autobús")) {
+               ctx.font = '90px Arial'; ctx.fillText("🚉", cw/2, ch/2 + 35);
             }
         }
 
         ctx.restore();
-
         const texture = new THREE.CanvasTexture(canvas);
         texture.anisotropy = this.renderer.capabilities.getMaxAnisotropy();
         return texture;
     }
 
     createCenterTexture() {
-        const cw = 2048;
-        const ch = 2048;
+        const cw = 2048; const ch = 2048;
         const canvas = document.createElement('canvas');
-        canvas.width = cw;
-        canvas.height = ch;
+        canvas.width = cw; canvas.height = ch;
         const ctx = canvas.getContext('2d');
-
-        const boardColor = '#CFE9DC';
-        ctx.fillStyle = boardColor;
-        ctx.fillRect(0, 0, cw, ch);
-
-        ctx.save();
-        ctx.translate(cw/2, ch/2);
-        ctx.rotate(-Math.PI / 4);
-
-        ctx.fillStyle = '#E31E24';
-        const logoW = 1500;
-        const logoH = 320;
-        ctx.fillRect(-logoW/2, -logoH/2, logoW, logoH);
-        
-        ctx.strokeStyle = '#fff';
-        ctx.lineWidth = 12;
-        ctx.strokeRect(-logoW/2 + 6, -logoH/2 + 6, logoW - 12, logoH - 12);
-        
-        ctx.strokeStyle = '#000';
-        ctx.lineWidth = 6;
-        ctx.strokeRect(-logoW/2, -logoH/2, logoW, logoH);
-
-        ctx.fillStyle = '#fff';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        
-        ctx.font = 'bold 190px Arial, sans-serif';
-        ctx.strokeStyle = '#000';
-        ctx.lineWidth = 10;
-        ctx.lineJoin = "round";
-        ctx.strokeText("MONOPOLY", 0, -35);
-        ctx.fillText("MONOPOLY", 0, -35);
-        
-        ctx.fillStyle = '#000';
-        ctx.font = 'bold 75px Arial, sans-serif';
-        ctx.fillText("ALGECIRAS", 0, 100);
-        ctx.restore();
-
-        ctx.save();
-        ctx.translate(cw * 0.72, ch * 0.72); 
-        ctx.rotate(-Math.PI / 4);
-        ctx.fillStyle = '#F47D20'; // Orange matched
-        ctx.fillRect(-160, -220, 320, 440);
-        ctx.strokeStyle = '#000';
-        ctx.lineWidth = 4;
-        ctx.strokeRect(-160, -220, 320, 440);
-        ctx.fillStyle = '#fff';
-        ctx.font = 'bold 200px Arial';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText("?", 0, 0);
-        ctx.restore();
-
-        ctx.save();
-        ctx.translate(cw * 0.28, ch * 0.28); 
-        ctx.rotate(-Math.PI / 4);
-        ctx.fillStyle = '#8AD0EF'; // Light Blue matched
-        ctx.fillRect(-160, -220, 320, 440);
-        ctx.strokeStyle = '#000';
-        ctx.lineWidth = 4;
-        ctx.strokeRect(-160, -220, 320, 440);
-        ctx.fillStyle = '#fff';
-        ctx.font = 'bold 160px Arial';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText("🎁", 0, 0);
-        ctx.restore();
-
+        const boardColor = '#d4efdf';
+        ctx.fillStyle = boardColor; ctx.fillRect(0, 0, cw, ch);
+        ctx.save(); ctx.translate(cw/2, ch/2); ctx.rotate(-Math.PI / 4);
+        ctx.fillStyle = '#E31E24'; const logoW = 1500; const logoH = 320; ctx.fillRect(-logoW/2, -logoH/2, logoW, logoH);
+        ctx.strokeStyle = '#fff'; ctx.lineWidth = 12; ctx.strokeRect(-logoW/2 + 6, -logoH/2 + 6, logoW - 12, logoH - 12);
+        ctx.strokeStyle = '#000'; ctx.lineWidth = 6; ctx.strokeRect(-logoW/2, -logoH/2, logoW, logoH);
+        ctx.fillStyle = '#fff'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.font = 'bold 190px Arial, sans-serif'; ctx.strokeStyle = '#000'; ctx.lineWidth = 10; ctx.lineJoin = "round";
+        ctx.strokeText("MONOPOLY", 0, -35); ctx.fillText("MONOPOLY", 0, -35);
+        ctx.fillStyle = '#000'; ctx.font = 'bold 75px Arial, sans-serif'; ctx.fillText("ALGECIRAS", 0, 100); ctx.restore();
+        ctx.save(); ctx.translate(cw * 0.72, ch * 0.72); ctx.rotate(-Math.PI / 4);
+        ctx.fillStyle = '#F47D20'; ctx.fillRect(-160, -220, 320, 440); ctx.strokeStyle = '#000'; ctx.lineWidth = 4; ctx.strokeRect(-160, -220, 320, 440);
+        ctx.fillStyle = '#fff'; ctx.font = 'bold 200px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText("?", 0, 0); ctx.restore();
+        ctx.save(); ctx.translate(cw * 0.28, ch * 0.28); ctx.rotate(-Math.PI / 4);
+        ctx.fillStyle = '#8AD0EF'; ctx.fillRect(-160, -220, 320, 440); ctx.strokeStyle = '#000'; ctx.lineWidth = 4; ctx.strokeRect(-160, -220, 320, 440);
+        ctx.fillStyle = '#fff'; ctx.font = 'bold 160px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText("🎁", 0, 0); ctx.restore();
         const texture = new THREE.CanvasTexture(canvas);
         texture.anisotropy = this.renderer.capabilities.getMaxAnisotropy();
         return texture;
     }
 
     generateBoard() {
-        const spaceW = 4.6;
-        const spaceH = 7.0;
+        // Escala aumentada para que el tablero ocupe más espacio y encaje en el cuadrado del fondo 2D
+        const scale = 2.4; 
+        const spaceW = 4.6 * scale;
+        const spaceH = 7.0 * scale;
         const rowOffset = (9 * spaceW) / 2 + (spaceH / 2);
 
         const geometryNormal = new THREE.BoxGeometry(spaceW * 0.95, 1, spaceH * 0.95);
@@ -427,9 +269,7 @@ export default class BoardController {
         for (let i = 0; i < 40; i++) {
             const isCorner = (i % 10 === 0);
             const geo = isCorner ? geometryCorner : geometryNormal;
-            
             let x = 0; let z = 0; let rotationY = 0;
-            
             if (i === 0) { x = rowOffset; z = rowOffset; } 
             else if (i < 10) { x = rowOffset - spaceH/2 - spaceW/2 - (i-1)*spaceW; z = rowOffset; rotationY = 0; }
             else if (i === 10) { x = -rowOffset; z = rowOffset; } 
@@ -440,112 +280,46 @@ export default class BoardController {
             else if (i < 40) { x = rowOffset; z = -rowOffset + spaceH/2 + spaceW/2 + (i-31)*spaceW; rotationY = Math.PI / 2; }
 
             const spaceData = this.monopolyData[i];
-            
-            const sideMat = new THREE.MeshStandardMaterial({ 
-                color: '#CFE9DC', // Uniform base board color
-                roughness: 1.0,   
-                metalness: 0.0
-            });
-            
+            const sideMat = new THREE.MeshStandardMaterial({ color: '#d4efdf', roughness: 0.8, metalness: 0.05 });
             const topTexture = this.createSpaceTexture(spaceData, i);
-            const topMat = new THREE.MeshStandardMaterial({ 
-                map: topTexture,
-                roughness: 1.0,   
-                metalness: 0.0
-            });
-            
+            const topMat = new THREE.MeshStandardMaterial({ map: topTexture, roughness: 0.8, metalness: 0.05 });
             const materials = [sideMat, sideMat, topMat, sideMat, sideMat, sideMat];
             const mesh = new THREE.Mesh(geo, materials);
-            
             mesh.position.set(x, 0, z);
             if (!isCorner) mesh.rotation.y = rotationY;
-            mesh.receiveShadow = true;
-            mesh.castShadow = true;
-            
+            mesh.receiveShadow = true; mesh.castShadow = true;
             this.scene.add(mesh);
             this.spaceMeshes.push(mesh);
             this.spaceCoordinates[i] = new THREE.Vector3(x, 0.5, z);
         }
         
         const innerGeo = new THREE.PlaneGeometry(rowOffset*2 - spaceH, rowOffset*2 - spaceH);
-        const centerTexture = this.createCenterTexture();
-        
-        const innerMat = new THREE.MeshStandardMaterial({ 
-            map: centerTexture, 
-            roughness: 1.0, 
-            metalness: 0 
-        });
+        const innerMat = new THREE.MeshStandardMaterial({ map: this.createCenterTexture(), roughness: 1.0, metalness: 0 });
         const innerMesh = new THREE.Mesh(innerGeo, innerMat);
         innerMesh.rotation.x = -Math.PI / 2;
         innerMesh.position.y = -0.49; 
         innerMesh.receiveShadow = true;
         this.scene.add(innerMesh);
-
-        this.addCardDecks();
+        this.addCardDecks(scale);
     }
 
-    addCardDecks() {
+    addCardDecks(scale) {
         const loader = new THREE.TextureLoader();
-        
-        // Cargar texturas
         const luckTexture = loader.load('./assets/cartas/suerte.png');
         const chestTexture = loader.load('./assets/cartas/comunidad.png');
-        
-        // Rotar texturas para que queden bien sobre el mazo desde la perspectiva del jugador
-        [luckTexture, chestTexture].forEach(tex => {
-            tex.center.set(0.5, 0.5);
-            tex.rotation = -Math.PI / 2;
-        });
-        
-        // Dimensiones del mazo (Más grandes para ocupar casi todo el recuadro)
-        const deckW = 8.5;  
-        const deckH = 0.8;
-        const deckD = 12.0; 
+        [luckTexture, chestTexture].forEach(tex => { tex.center.set(0.5, 0.5); tex.rotation = -Math.PI / 2; });
+        const deckW = 8.5 * scale; const deckH = 0.8; const deckD = 12.0 * scale; 
         const deckGeo = new THREE.BoxGeometry(deckW, deckH, deckD);
-        
-        // Materiales para el mazo
         const sideMat = new THREE.MeshStandardMaterial({ color: '#f5f5f5', roughness: 0.9 });
         const bottomMat = new THREE.MeshStandardMaterial({ color: '#ddd', roughness: 1.0 });
-        
-        // Suerte Deck
-        const luckMaterials = [
-            sideMat, sideMat, 
-            new THREE.MeshStandardMaterial({ map: luckTexture, roughness: 0.5 }), 
-            bottomMat, sideMat, sideMat
-        ];
+        const luckMaterials = [sideMat, sideMat, new THREE.MeshStandardMaterial({ map: luckTexture, roughness: 0.5 }), bottomMat, sideMat, sideMat];
         const luckDeck = new THREE.Mesh(deckGeo, luckMaterials);
-        luckDeck.position.set(9.2, 0.4, 9.2);
-        luckDeck.rotation.y = Math.PI / 4;
-        luckDeck.castShadow = true;
-        luckDeck.receiveShadow = true;
-        this.scene.add(luckDeck);
-        
-        // Community Chest Deck
-        const chestMaterials = [
-            sideMat, sideMat, 
-            new THREE.MeshStandardMaterial({ map: chestTexture, roughness: 0.5 }), 
-            bottomMat, sideMat, sideMat
-        ];
+        luckDeck.position.set(9.2 * scale, 0.4, 9.2 * scale);
+        luckDeck.rotation.y = Math.PI / 4; luckDeck.castShadow = true; this.scene.add(luckDeck);
+        const chestMaterials = [sideMat, sideMat, new THREE.MeshStandardMaterial({ map: chestTexture, roughness: 0.5 }), bottomMat, sideMat, sideMat];
         const chestDeck = new THREE.Mesh(deckGeo, chestMaterials);
-        chestDeck.position.set(-9.2, 0.4, -9.2);
-        chestDeck.rotation.y = Math.PI / 4;
-        chestDeck.castShadow = true;
-        chestDeck.receiveShadow = true;
-        this.scene.add(chestDeck);
-
-        // Añadir una pequeña "pila" de 3-4 cartas extras debajo
-        for(let i=1; i<=4; i++) {
-            const offset = i * 0.1;
-            const luckExtra = luckDeck.clone();
-            luckExtra.position.y -= offset;
-            luckExtra.rotation.y += (Math.random() - 0.5) * 0.01;
-            this.scene.add(luckExtra);
-
-            const chestExtra = chestDeck.clone();
-            chestExtra.position.y -= offset;
-            chestExtra.rotation.y += (Math.random() - 0.5) * 0.01;
-            this.scene.add(chestExtra);
-        }
+        chestDeck.position.set(-9.2 * scale, 0.4, -9.2 * scale);
+        chestDeck.rotation.y = Math.PI / 4; chestDeck.castShadow = true; this.scene.add(chestDeck);
     }
 
     animate() {
@@ -560,10 +334,8 @@ export default class BoardController {
 
     onResize() {
         if (!this.container || !this.camera || !this.renderer) return;
-        const width = this.container.clientWidth;
-        const height = this.container.clientHeight;
-        this.camera.aspect = width / height;
-        this.camera.updateProjectionMatrix();
+        const width = this.container.clientWidth; const height = this.container.clientHeight;
+        this.camera.aspect = width / height; this.camera.updateProjectionMatrix();
         this.renderer.setSize(width, height);
     }
 }

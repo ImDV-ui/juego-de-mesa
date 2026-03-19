@@ -65,13 +65,43 @@ export default class GameController {
                 item.innerHTML = `
                     <h3>Jugador ${i + 1}</h3>
                     <input type="text" class="p-name-input" placeholder="Nombre" value="Jugador ${i + 1}">
-                    <div class="color-selector">
-                        ${defaultColors.map((c, idx) => `
-                            <label class="color-chip">
-                                <input type="radio" name="p-color-${i}" value="${c}" ${idx === i ? 'checked' : ''}>
-                                <span style="background-color: ${c}"></span>
+                    
+                    <div class="setup-row">
+                        <label>Color:</label>
+                        <div class="color-selector">
+                            ${defaultColors.map((c, idx) => `
+                                <label class="color-chip">
+                                    <input type="radio" name="p-color-${i}" value="${c}" ${idx === i ? 'checked' : ''}>
+                                    <span style="background-color: ${c}"></span>
+                                </label>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <div class="setup-row">
+                        <label>Ficha:</label>
+                        <div class="piece-selector">
+                            <label class="piece-option">
+                                <input type="radio" name="p-piece-${i}" value="coche" checked>
+                                <span>🏎️ Coche</span>
                             </label>
-                        `).join('')}
+                            <label class="piece-option">
+                                <input type="radio" name="p-piece-${i}" value="sombrero">
+                                <span>🎩 Sombrero</span>
+                            </label>
+                            <label class="piece-option">
+                                <input type="radio" name="p-piece-${i}" value="dedal">
+                                <span>🧵 Dedal</span>
+                            </label>
+                            <label class="piece-option">
+                                <input type="radio" name="p-piece-${i}" value="barco">
+                                <span>🚢 Barco</span>
+                            </label>
+                            <label class="piece-option">
+                                <input type="radio" name="p-piece-${i}" value="zapato">
+                                <span>👟 Zapato</span>
+                            </label>
+                        </div>
                     </div>
                 `;
                 configContainer.appendChild(item);
@@ -93,12 +123,13 @@ export default class GameController {
         for (let i = 0; i < configItems.length; i++) {
             const name = configItems[i].querySelector('.p-name-input').value.trim();
             const color = configItems[i].querySelector('input[name="p-color-' + i + '"]:checked').value;
+            const piece = configItems[i].querySelector('input[name="p-piece-' + i + '"]:checked').value;
             
             if (!name) {
                 alert("Por favor, introduce un nombre para el Jugador " + (i + 1));
                 return;
             }
-            playersConfig.push({ name, color });
+            playersConfig.push({ name, color, piece });
         }
 
         // Crear jugadores
@@ -110,7 +141,27 @@ export default class GameController {
 
         // Crear tokens 3D
         for (let i = 0; i < this.gameState.players.length; i++) {
-            await this.tokenController.createPlayerToken(this.gameState.players[i].id, './assets/fichas/monopoly_car.glb');
+            const pConf = playersConfig[i];
+            let modelPath;
+
+            switch (pConf.piece) {
+                case 'sombrero':
+                    modelPath = './assets/fichas/sombrero/3D_Hat_anm_Tpose.obj';
+                    break;
+                case 'dedal':
+                    modelPath = './assets/fichas/dedal/3D_Thimble_anm_Tpose.obj';
+                    break;
+                case 'barco':
+                    modelPath = './assets/fichas/barco/3D_Ship_anm_Tpose.obj';
+                    break;
+                case 'zapato':
+                    modelPath = './assets/fichas/zapato/3D_Shoe_anm_Tpose.obj';
+                    break;
+                default:
+                    modelPath = './assets/fichas/monopoly_car.glb';
+            }
+
+            await this.tokenController.createPlayerToken(this.gameState.players[i].id, modelPath);
             const token = this.tokenController.tokens.find(t => t.id === this.gameState.players[i].id);
             token.model.traverse(child => {
                 if (child.isMesh) {
